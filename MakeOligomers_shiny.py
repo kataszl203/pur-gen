@@ -96,6 +96,7 @@ def MakeOligomers(substrates, size, output=None, molecules_2D=False, molecules_3
 
     return
 
+
 def validate_input(input_file):
     valid_file = False
     with open(input_file) as i:
@@ -109,18 +110,26 @@ def validate_input(input_file):
         
         if second_line:
             if len(second_line.split(';')) == 2:
-                if Chem.MolFromSmiles(second_line.split(';')[1][:-2]):
+                if Chem.MolFromSmiles(second_line.split(';')[1]):
                     valid_file = True
+                else:
+                    print("No smiles in input file")
             
     return title_line, valid_file
 
-def prepare_reaction(substrates, title_line):
+def prepare_reaction(substrates):
+    
+    #substrates = Chem.SmilesMolSupplier(substrates, delimiter=';', smilesColumn=1, nameColumn=0, titleLine=title_line)
 
-    substrates = Chem.SmilesMolSupplier(substrates, delimiter=';', smilesColumn=1, nameColumn=0, titleLine=title_line)
+    substrates_mols = []
+    for substrate in substrates:
+        mol = Chem.MolFromSmiles(substrate[1])
+        mol.SetProp('name', substrate[0])
+        substrates_mols.append(mol)
 
     ## New
-    a_list = []#isocyanates and diisocyanates
-    b_list = []#mono and poliols
+    iso_mols = []#isocyanates and diisocyanates
+    poliol_mols = []#mono and poliols
 
     #Assign properties to the substrates according to the functional group
     n_diiso=0 
@@ -128,30 +137,30 @@ def prepare_reaction(substrates, title_line):
     n_ol=0 
     n_diol=0 
     n=0   
-    for comp in substrates:
+    for comp in substrates_mols:
         if comp.HasSubstructMatch(diiso):
             comp.SetProp('func_group', 'diiso')
-            a_list.append(comp)
+            iso_mols.append(comp)
             n_diiso+=1
 
         elif comp.HasSubstructMatch(iso):
             comp.SetProp('func_group', 'iso')
-            a_list.append(comp)
+            iso_mols.append(comp)
             n_iso+=1
 
         elif comp.HasSubstructMatch(diol):
             if comp.HasSubstructMatch(ol_2):
                 comp.SetProp('func_group', 'ol')
-                b_list.append(comp)
+                poliol_mols.append(comp)
                 n_ol+=1
             else:
                 comp.SetProp('func_group', 'diol')
-                b_list.append(comp)
+                poliol_mols.append(comp)
                 n_diol+=1
 
         elif comp.HasSubstructMatch(ol):
             comp.SetProp('func_group', 'ol')
-            b_list.append(comp)
+            poliol_mols.append(comp)
             n_ol+=1
         n+=1
     
@@ -163,11 +172,12 @@ def prepare_reaction(substrates, title_line):
             <li>%i diols</li>
             </ul>''' % (n, n_iso, n_diiso, n_ol, n_diol)          
     #print(info)
-    return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, a_list, b_list
+    return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols
 
 def perform_dimerization(a_list, b_list, images=False):
     products_list = []
     text='<div> <b>-_-_-_-_-_-_-_-_ dimerization -_-_-_-_-_-_-_-_-_</b><br>'
+    prod_text = '<b> OLIGOMERS </b>'
     i = 0
     
     conversion = ob.OBConversion()
@@ -201,6 +211,7 @@ def perform_dimerization(a_list, b_list, images=False):
                 i+=1
                 text+='<br><b>Reaction %i:</b> %s + %s -> %s' %(i,Chem.MolToSmiles(reacts[0]),
                     Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(products[0][0]))
+                prod_text+='<br> <b> %i.</b> %s' % (i,Chem.MolToSmiles(products[0][0]))
             
                 
             
@@ -210,8 +221,9 @@ def perform_dimerization(a_list, b_list, images=False):
     # b_list = [] #mono and poliols
     # products_list = [] #output
     ## End New
-    text+="</div>"
-    return text
+    text+="<br><br></div>"
+    prod_text+="<br><br>"
+    return text, prod_text
 
 def perform_trimerization(a_list, b_list):
     products_list = []
