@@ -1,6 +1,11 @@
 from rdkit import Chem
+from rdkit.Chem import Draw
 from rdkit.Chem import rdChemReactions
 from rdkit.Chem import rdmolfiles
+from rdkit.Chem.Draw import IPythonConsole
+from rdkit.Chem import rdDepictor
+from rdkit.Chem.Draw import rdMolDraw2D
+from IPython.display import SVG
 from openbabel import openbabel as ob
 from openbabel import pybel
 import os
@@ -23,11 +28,6 @@ ol = Chem.MolFromSmiles('CO')
 ol_2 = Chem.MolFromSmiles('COCCO')
 diol = Chem.MolFromSmiles('OC.CO')
 
-# #Substrates and products
-# a_list = [] #isocyanates and diisocyanates
-# b_list = [] #mono and poliols
-# products_list = [] #output
-
 #Reactions in SMARTS
 #Dimerization
 ab = '[N:1]=[C:2]=[O:3].[C:4][O;H1:5]>>[N:1][C:2]([O:5][C:4])=[O:3]'
@@ -38,64 +38,39 @@ bab = '[C:1][O;H1:2].([O:3]=[C:4]=[N:5].[N:6]=[C:7]=[O:8]).[C:9][O;H1:10]>>([C:1
 abab = ('[N:1]=[C:2]=[O:3].([O;H1:4][C:5].[C:6][O;H1:7]).([N:8]=[C:9]=[O:10].[N:11]=[C:12]=[O:13]).[O;H1:14][C:15]>>'
         '([N:1][C:2](=[O:3])[O:4][C:5].[C:6][O:7][C:9](=[O:10])[N:8].[N:11][C:12](=[O:13])[O:14][C:15])')
 
-def MakeOligomers(substrates, size, output=None, molecules_2D=False, molecules_3D=False, conformers=False, images=False):
-    
-    print("\n /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ \n",
-          "- - - - - - - - - - - - - - - - - - - - - - - - -\n",
-          "               o l i g o m e r\n",
-          "- - - - - - - - - - - - - - - - - - - - - - - - -\n",
-          "\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ \n\n",
-          "-------------------------------------------------\n",
-          "oligomer version 1.0\n",
-          "-------------------------------------------------\n"
-         )
-  
-    print("Loading input file...", end=" ")
-    if os.path.exists(substrates):
-        print("OK.\n")
-        
-        valid = prepare_reaction(substrates)[0]
-        #Perfom reaction
-        print('Reaction type: ', end="")
-        if valid:
-            print('polyurethane fragments synthesis.\n')
-            print('Number of units for reaction:', size)
-            print('\n------------------------------------------------')
-            if size == 2:
-                mer='dimer'
-                i = perform_dimerization()
-            elif size == 3:
-                mer='trimer'
-                i = perform_trimerization()
-            elif size == 4:
-                mer='tetramer'
-                i = perform_tetramerization()
-            else:
-                print('Error: Number of units out of range! (2=dimer, 3=trimer, 4=tetramer)')
-                exit(1)
-        else:
-            print('invalid reaction properties')
-            exit(1)
-        
-    else:
-        print('\nError: No such file or directory. Wrong input file name!')
-        exit(1)
-    
-    print('\nSynthesis done!')
-    print('%i products were generated.\n'%i) 
-    print('------------------------------------------------')
-   
-    process_output(output)
-    process_molecules_2D(molecules_2D)
-    process_molecules_3D(molecules_3D, mer) 
-    process_conformers(conformers, mer) 
-    process_images(images) 
-    
-    print('                     END')
-    print('------------------------------------------------\n')
+def mol_to_svg(mol, molSize = (300,300), kekulize = True):
+    mc = Chem.Mol(mol.ToBinary())
+    if kekulize:
+        try:
+            Chem.Kekulize(mc)
+        except:
+            mc = Chem.Mol(mol.ToBinary())
+    if not mc.GetNumConformers():
+        rdDepictor.Compute2DCoords(mc)
+    drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
+    drawer.DrawMolecule(mc)
+    drawer.FinishDrawing()
+    svg = drawer.GetDrawingText()
+    return svg.replace('svg:','')
 
-    return
+def smiles_to_image(input_smiles):
+    m = Chem.MolFromSmiles(input_smiles)
+    #svg_img = SVG(mol_to_svg(m))
+    pil_img = Draw.MolToImage(m)
+    return pil_img
 
+
+def prepare_substrate_list(input_file):
+    #initial_list = open(input_file,"r").read().splitlines() 
+    substrate_list = []
+    
+    for line in open(input_file,"r").read().splitlines():
+        line = line.split(";")
+        m = Chem.MolFromSmiles(line[1])
+        #image = Draw.MolToImage(m)
+        substrate_list.append(Draw.MolToImage(m))
+    
+    return substrate_list
 
 def validate_input(input_file):
     valid_file = False
@@ -119,8 +94,6 @@ def validate_input(input_file):
 
 def prepare_reaction(substrates):
     
-    #substrates = Chem.SmilesMolSupplier(substrates, delimiter=';', smilesColumn=1, nameColumn=0, titleLine=title_line)
-
     substrates_mols = []
     for substrate in substrates:
         mol = Chem.MolFromSmiles(substrate[1])
@@ -171,64 +144,34 @@ def prepare_reaction(substrates):
             <li>%i alcohols/phenols</li>
             <li>%i diols</li>
             </ul>''' % (n, n_iso, n_diiso, n_ol, n_diol)          
-    #print(info)
+
     return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols
 
-def perform_dimerization(a_list, b_list, images=False):
+def perform_dimerization(a_list, b_list):
+    reagents_smiles = []
+    products_smiles = []
     products_list = []
-    text='<div> <b>-_-_-_-_-_-_-_-_ dimerization -_-_-_-_-_-_-_-_-_</b><br>'
-    prod_text = '<b> OLIGOMERS </b>'
-    i = 0
+   
+    # conversion = ob.OBConversion()
+    # conversion.SetInAndOutFormats("smi", "_png2")
+    # mol = ob.OBMol()
     
-    conversion = ob.OBConversion()
-    conversion.SetInAndOutFormats("smi", "_png2")
-    mol = ob.OBMol()
-    if images:
-        for a in a_list:
-            for b in b_list:
-                reaction = ab
-                reacts = (a,b)
-                rxn = rdChemReactions.ReactionFromSmarts(reaction)
-                products = rxn.RunReactants(reacts)
-                products_list.append(products[0][0])
-                i+=1
-                name = str(i)+'.png'
-                file = 'www/'+ name
-                conversion.ReadString(mol, Chem.MolToSmiles(products[0][0]))
-                conversion.WriteFile(mol, file)
-                
-                text+="<br><b>Reaction %i:</b> %s + %s -> %s <img src='Copy.png' width='20px'>" %(i,Chem.MolToSmiles(reacts[0]),
-                    Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(products[0][0]))
-                
-    else:
-        for a in a_list:
-            for b in b_list:
-                reaction = ab
-                reacts = (a,b)
-                rxn = rdChemReactions.ReactionFromSmarts(reaction)
-                products = rxn.RunReactants(reacts)
-                products_list.append(products[0][0])
-                i+=1
-                text+='<br><b>Reaction %i:</b> %s + %s -> %s' %(i,Chem.MolToSmiles(reacts[0]),
-                    Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(products[0][0]))
-                prod_text+='<br> <b> %i.</b> %s' % (i,Chem.MolToSmiles(products[0][0]))
-            
-                
-            
-            
-    ## New
-    # a_list = [] #isocyanates and diisocyanates
-    # b_list = [] #mono and poliols
-    # products_list = [] #output
-    ## End New
-    text+="<br><br></div>"
-    prod_text+="<br><br>"
-    return text, prod_text
+    for a in a_list:
+        for b in b_list:
+            reaction = ab
+            reacts = (a,b)
+            rxn = rdChemReactions.ReactionFromSmarts(reaction)
+            products = rxn.RunReactants(reacts)
+            products_list.append(products[0][0])
+            reagents_smiles.append([Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1])])
+            products_smiles.append(Chem.MolToSmiles(products[0][0]))
+            i+=1
+    return reagents_smiles, products_smiles
 
 def perform_trimerization(a_list, b_list):
+    reagents_smiles = []
+    products_smiles = []
     products_list = []
-    text='<b>-_-_-_-_-_-_-_-_ trimerization -_-_-_-_-_-_-_-_-</b><br>'
-    i = 0
     
     for a in a_list:
         for b in b_list:
@@ -238,9 +181,8 @@ def perform_trimerization(a_list, b_list):
                 rxn = rdChemReactions.ReactionFromSmarts(reaction)
                 products = rxn.RunReactants(reacts)
                 products_list.append(products[0][0])
-                i+=1
-                text+='<br><b>Reaction %i:</b> %s + %s + %s -> %s' %(i,Chem.MolToSmiles(reacts[0]),
-                    Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(reacts[2]),Chem.MolToSmiles(products[0][0]))
+                reagents_smiles.append([Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(reacts[2])])
+                products_smiles.append(Chem.MolToSmiles(products[0][0]))
 
             elif a.GetProp('func_group') == 'diiso' and b.GetProp('func_group') == 'ol':
                 reaction = bab
@@ -248,15 +190,15 @@ def perform_trimerization(a_list, b_list):
                 rxn = rdChemReactions.ReactionFromSmarts(reaction)
                 products = rxn.RunReactants(reacts)
                 products_list.append(products[0][0])
-                i+=1
-                text+='<br><b>Reaction %i:</b> %s + %s + %s -> %s' %(i,Chem.MolToSmiles(reacts[0]),
-                    Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(reacts[2]),Chem.MolToSmiles(products[0][0]))
-    return text
+                reagents_smiles.append([Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(reacts[2])])
+                products_smiles.append(Chem.MolToSmiles(products[0][0]))
+
+    return reagents_smiles, products_smiles
 
 def perform_tetramerization(a_list, b_list):
+    reagents_smiles = []
+    products_smiles = []
     products_list = []
-    text='<b>-_-_-_-_-_-_-_- tetramerization -_-_-_-_-_-_-_-_</b><br>'
-    i = 0
     
     for a in a_list:
         if a.GetProp('func_group') == 'diiso':
@@ -267,10 +209,10 @@ def perform_tetramerization(a_list, b_list):
                     rxn = rdChemReactions.ReactionFromSmarts(reaction)
                     products = rxn.RunReactants(reacts)
                     products_list.append(products[0][0])
-                    i+=1
-                    text+='<br><b>Reaction %i:</b> %s + %s + %s + %s -> %s' %(i,Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1]),
-                        Chem.MolToSmiles(reacts[2]),Chem.MolToSmiles(reacts[3]),Chem.MolToSmiles(products[0][0]))
-    return text
+                    reagents_smiles.append([Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1]),Chem.MolToSmiles(reacts[2]),Chem.MolToSmiles(reacts[3])],)
+                    products_smiles.append(Chem.MolToSmiles(products[0][0]))
+                    
+    return reagents_smiles, products_smiles
 
 
 def process_smiles():
