@@ -2,6 +2,14 @@
 Web application for the tool oligomer.
 ![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/133d98c3-1fa5-4b2e-b78b-c147e4763247)
 
+Used packages:
+
+RDKit https://www.rdkit.org/docs/index.html
+
+Pybel https://openbabel.org/docs/dev/UseTheLibrary/Python_Pybel.html
+
+Shiny for Python https://shiny.rstudio.com/py/
+
 ## Dependencies for Debian/Ubuntu
 ### Libraries needed to run the script
 ```
