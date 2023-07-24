@@ -37,7 +37,8 @@ $apt -y install --no-install-recommends\
                 librdkit1\
                 rdkit-data\
                 wget
-$pip3 install matplotlib
+$pip install matplotlib
+$pip install shiny
 ```
 ### Build patched openbabel
 ```
