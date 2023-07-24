@@ -45,4 +45,5 @@ $pip install shiny
 $chmod +x ./build_openbabel.sh
 $./build_openbabel.sh
 ```
-## Running the project locally
+## Running the web application locally
+$/usr/bin/python -m shiny run --reload app.py
