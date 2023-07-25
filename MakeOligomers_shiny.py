@@ -165,7 +165,6 @@ def perform_dimerization(a_list, b_list):
             products_list.append(products[0][0])
             reagents_smiles.append([Chem.MolToSmiles(reacts[0]),Chem.MolToSmiles(reacts[1])])
             products_smiles.append(Chem.MolToSmiles(products[0][0]))
-            i+=1
     return reagents_smiles, products_smiles
 
 def perform_trimerization(a_list, b_list):
@@ -215,7 +214,7 @@ def perform_tetramerization(a_list, b_list):
     return reagents_smiles, products_smiles
 
 
-def process_smiles():
+def process_smiles(products_list):
     #if output:
         #print('Products will be saved in SMILES format.')
         #with open(output, 'w') as o:
@@ -229,7 +228,7 @@ def process_smiles():
         # print('------------------------------------------------')
     return smiles
 
-def process_molecules_2D(molecules_2D):
+def process_molecules_2D(molecules_2D, products_list):
     if molecules_2D:
         print('Generating 2D structures.\n')
         if not os.path.exists(molecules_2D):
@@ -244,7 +243,7 @@ def process_molecules_2D(molecules_2D):
         else:
             print('Error: directory %s already exist!\n' %(molecules_2D))
 
-def process_molecules_3D(molecules_3D, mer):
+def process_molecules_3D(molecules_3D, mer, products_list):
     if molecules_3D:
         print('Generating 3D structures.\n')
         if not os.path.exists(molecules_3D):
@@ -273,7 +272,7 @@ def process_molecules_3D(molecules_3D, mer):
         else:
             print('Error: directory %s already exist!\n' % (molecules_3D))
 
-def process_conformers(conformers, mer):
+def process_conformers(conformers, mer, products_list):
     if conformers:
         print('Generating conformers for 3D structures.')
         
@@ -343,7 +342,7 @@ def process_conformers(conformers, mer):
         else:
             print('Error: directory %s already exist!\n'%(conformers))
 
-def process_images(images):
+def process_images(images, products_list):
     if images:
         print('Generating 2D images.\n')
         conversion = ob.OBConversion()
