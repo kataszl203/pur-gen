@@ -60,7 +60,6 @@ def smiles_to_image(input_smiles):
     pil_img = Draw.MolToImage(m)
     return pil_img
 
-
 def prepare_substrate_list(input_file):
     # initial_list = open(input_file,"r").read().splitlines()
     substrate_list = []

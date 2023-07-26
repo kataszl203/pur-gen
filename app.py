@@ -39,11 +39,14 @@ app_ui = ui.page_fluid(
             ui.output_image("oligomer_image"),
 
             # Image options trials
+            # ui.output_ui("image_html"),
             # ui.output_plot("my_widget", width="100px"),
 
             ui.output_ui("process_substrates"),
 
             ui.output_ui("perform_reactions"),
+
+            #ui.output_plot("render_products_imgs"),
 
             ui.output_ui("download_options")
         )
@@ -63,14 +66,20 @@ def server(input, output, session):
             img: ImgData = {"src": 'www/oligomer_main.png', "width": "90%"}
         return img
 
-    # Png generated from smiles can be rendered as plot
+
+    @output
+    @render.ui
+    def image_html():
+        return ui.HTML("""<img src="www/test_img.png"> """)
+
+    # PIL image generated from smiles can be rendered as plot
     @output
     # @render_widget
     @render.plot
     def my_widget():
         smiles = MakeOligomers_shiny.smiles_to_image("CN=C=O")
-        file = open("www/test_img.png", "rb")
-        image = file.read()
+        # file = open("www/test_img.png", "rb")
+        # image = file.read()
         # register_widget("smiles",smiles)
         # return ipywidgets.Image(value=image,width=100)
         return smiles
@@ -86,7 +95,7 @@ def server(input, output, session):
                 return ui.HTML("""<b>ERROR: Wrong input file!</b><br> 
                                Upload substrates in format: Name;SMILES<br><br>""")
 
-                # Process substrates
+    # Process substrates
 
     @output
     @render.ui
@@ -119,7 +128,6 @@ def server(input, output, session):
                     if comp[1] not in smiles:
                         substrates.append([comp[0], comp[1]])
                         smiles.append(comp[1])
-            #return ui.HTML(substrates)
         if not (input.isocyanates() or input.poliols() or input.uploaded_file()):
             return ui.HTML("Substrates not selected.")
 
@@ -163,6 +171,62 @@ def server(input, output, session):
             reactions += "<br><br>"
             products_info += '<br><br>'
             return ui.HTML(subtrates_grouped[1]), ui.HTML(reactions), ui.HTML(products_info)
+
+
+    # Show products as images
+    @output
+    @render.plot
+    @reactive.event(input.make_oligomers)
+
+    def render_products_imgs():
+        substrates = []
+        smiles = []
+        if input.isocyanates():
+            for iso in input.isocyanates():
+                comp = iso.split(";")
+                smiles.append(comp[1])
+                substrates.append([comp[0], comp[1]])
+
+        if input.poliols():
+            for ol in input.poliols():
+                comp = ol.split(";")
+                smiles.append(comp[1])
+                substrates.append([comp[0], comp[1]])
+
+        if input.uploaded_file():
+            input_file = input.uploaded_file()[0]['datapath']
+            uploaded_substrates = open(input_file, "r").read().splitlines()
+            if uploaded_substrates[0] == 'Name;SMILES':
+                lines = range(1, len(uploaded_substrates))
+            else:
+                lines = range(len(uploaded_substrates))
+
+            for line in lines:
+                if uploaded_substrates[line] != "":
+                    comp = uploaded_substrates[line].split(";")
+                    if comp[1] not in smiles:
+                        substrates.append([comp[0], comp[1]])
+                        smiles.append(comp[1])
+        # Perform reactions
+        if substrates:
+            subtrates_grouped = MakeOligomers_shiny.prepare_reaction(substrates)
+            selected_size = int(input.size().split()[0])
+
+            if selected_size == 2:
+                reagents_smiles, products_smiles = MakeOligomers_shiny.perform_dimerization(subtrates_grouped[2],
+                                                                                            subtrates_grouped[3])
+            elif selected_size == 3:
+                reagents_smiles, products_smiles = MakeOligomers_shiny.perform_trimerization(subtrates_grouped[2],
+                                                                                             subtrates_grouped[3])
+            elif selected_size == 4:
+                reagents_smiles, products_smiles = MakeOligomers_shiny.perform_tetramerization(subtrates_grouped[2],
+                                                                                               subtrates_grouped[3])
+
+            output_imgs = ()
+            #for product in products_smiles:
+            #    output_imgs += MakeOligomers_shiny.smiles_to_image(product)
+            #return output_imgs
+            return MakeOligomers_shiny.smiles_to_image(products_smiles[0]), MakeOligomers_shiny.smiles_to_image(products_smiles[1])
 
     # Show output buttons after button is clicked
     @output
