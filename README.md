@@ -39,6 +39,7 @@ $apt -y install --no-install-recommends\
                 wget
 $pip install matplotlib
 $pip install shiny
+$pip install shinywidgets
 ```
 ### Build patched openbabel
 ```
