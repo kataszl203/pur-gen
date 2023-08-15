@@ -195,8 +195,11 @@ def modify_molecule(smiles, condition):
         # Replace NCO group with CH3
         replacement = '[CH3]'
     elif condition == "NH2":
-        # Replace NCO group with NH3
+        # Replace NCO group with NH2
         replacement = '[NH2]'
+    elif condition == "NC(=O)OH":
+        # Replace NCO group with NCOOH
+        replacement = '[NX3][CX3](=[OX1])[OX2H0]'
     elif condition == "N=C=O":
         # Do nothing (leave NCO)
         return smiles

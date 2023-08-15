@@ -13,3 +13,4 @@ butyl glycolate;OCC(OCCCC)=O
 isopentyl 2-hydroxypropanoate;CC(O)C(OCCC(C)C)=O
 diethylene glycol;OCCOCCO
 dipropylene glycol;CC(OCC(O)C)CO
+(R)-4-(((S)-1-((R)-2-((R)-2-hydroxypropoxy)propoxy)propan-2-yl)oxy)butan-2-ol;O[C@H](C)CO[C@H](C)COC[C@H](C)OCC[C@@H](C)O

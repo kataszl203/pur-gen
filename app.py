@@ -118,16 +118,10 @@ app.layout = html.Div(
                     ),
                     
                     html.H5(id='successful-upload', children = [], style={'color':'gray', 'margin-top': '5px', 'textAlign': 'center', 'font-weight': 'normal'}), 
-                    # html.Div([
-                    # html.H4("Upload other substrates", style={'font-weight': 'normal','margin-top': '5px', 'margin-bottom': '0'}),
-                    # html.H4("(accepted file format: Name;SMILES)", style={'font-weight': 'normal', 'margin-top': '0'}),
-                    # ],
-                    # style={'margin-left': '10px',}),  
                 
                     dcc.Store(id='uploaded-data'),
                 
                 ],),
-                # style={'display': 'flex', 'align-items': 'left'}),
                  
             
             html.H2("SELECT SIZE", style={'font-weight': 'normal'}),
@@ -156,7 +150,7 @@ app.layout = html.Div(
             
             
             html.H2("SELECT CAPPING GROUP", style={'font-weight': 'normal'}),
-            dcc.Dropdown(['-NH2', '-CH3', '-N=C=O'], placeholder="Select isocyanate capping", id='capping-group', value='-N=C=O'),
+            dcc.Dropdown(['-NH2', '-CH3', '-N=C=O', '-NC(=O)OH'], placeholder="Select isocyanate capping", id='capping-group', value='-N=C=O'),
             html.Button("MAKE OLIGOMERS!", id='make-oligomers-button', n_clicks=0, 
                         style={'margin-top': '30px'})
 
@@ -208,6 +202,81 @@ app.layout = html.Div(
             ]),
         dcc.Store(id='store-reaction'),
         html.Div(id = 'left-panel-footer', children = [
+            html.H3("related publication:", style={'color': '5b5d74',
+                                                'font-size': '15px',
+                                                'font-weight': '600',
+                                                'line-height': '15px',
+                                                'letter-spacing': '.1rem',
+                                                'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'textAlign': 'center',
+                                                'margin-top':'50px'}),
+            html.A("Title of the publication, Authors, 2023", href='http://www.doi.pl/', style={'color': '5b5d74',
+                                                'font-size': '14px',
+                                                'font-weight': '600',
+                                                'line-height': '14px',
+                                                'letter-spacing': '.1rem',
+                                                # 'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'display': 'flex',  # Set display to flex
+                                                'justify-content': 'center',  # Center horizontally
+                                                'align-items': 'center',  # Center vertically
+                                                'margin-bottom': '20px'
+                                                }),
+            html.H3("Contact Information", style={'color': '5b5d74',
+                                                'font-size': '15px',
+                                                'font-weight': '600',
+                                                'line-height': '15px',
+                                                'letter-spacing': '.1rem',
+                                                'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'textAlign': 'center',
+                                                'margin-top':'50px'}),
+            html.H3("EMAIL: k.szleper@tunnelinggroup.pl", style={'color': '5b5d74',
+                                                'font-size': '14px',
+                                                'font-weight': '600',
+                                                'line-height': '14px',
+                                                'letter-spacing': '.1rem',
+                                                # 'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'textAlign': 'center',
+                                                }),
+            html.H3("VISIT OUR WEBPAGE!", style={'color': '5b5d74',
+                                                'font-size': '14px',
+                                                'font-weight': '600',
+                                                'line-height': '14px',
+                                                'letter-spacing': '.1rem',
+                                                # 'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'textAlign': 'center',
+                                                'margin-top': '10px'
+                                                }),
+            html.A("Tunneling Group", href='http://www.tunnelinggroup.pl/', title = 'http://www.tunnelinggroup.pl/', style={'color': '5b5d74',
+                                                'font-size': '18px',
+                                                'font-weight': '600',
+                                                'line-height': '18px',
+                                                'letter-spacing': '.1rem',
+                                                # 'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'normal',
+                                                'white-space': 'nowrap',
+                                                'display': 'flex',  # Set display to flex
+                                                'justify-content': 'center',  # Center horizontally
+                                                'align-items': 'center',  # Center vertically
+                                                'margin-bottom': '20px'
+                                                })
+        
+             
             # html.P("Contact", style={'position': 'absolute', 'bottom': '0', 'left': '0', 'right': '0', 'padding': '10px'})
             ]),
     ]),
