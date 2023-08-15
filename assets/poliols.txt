@@ -1,0 +1,15 @@
+methanol;CO
+ethanol;CCO
+propanol;CCCO
+butanol;CCCCO
+pentanol;CCCCCO
+ethylene glycol;OCCO
+propylene glycol;CC(O)CO
+1,4-butanediol;OCCCCO
+neopentyl glycol;OCC(C)(CO)C
+methyl glycolate;OCC(OC)=O
+ethyl glycolate;OCC(OCC)=O
+butyl glycolate;OCC(OCCCC)=O
+isopentyl 2-hydroxypropanoate;CC(O)C(OCCC(C)C)=O
+diethylene glycol;OCCOCCO
+dipropylene glycol;CC(OCC(O)C)CO
