@@ -21,8 +21,8 @@ external_stylesheets = ['assets/style.css']
 f_app = flask.Flask(__name__)
 app = dash.Dash(__name__)
 
-isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("assets/isocyanates.txt", "r").read().splitlines()]
-hydroxyl_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("assets/poliols.txt", "r").read().splitlines()]
+isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/isocyanates.txt", "r").read().splitlines()]
+hydroxyl_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/poliols.txt", "r").read().splitlines()]
 
 def create_checkbox_list(options, table_title, table_id, checklist_id):
     return html.Div(
