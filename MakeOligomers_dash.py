@@ -1,20 +1,10 @@
 from rdkit import Chem
-from rdkit.Chem import Draw
+from rdkit.Chem import Draw, AllChem
 from rdkit.Chem import rdChemReactions
-from rdkit.Chem import rdmolfiles
-from rdkit.Chem.Draw import IPythonConsole
-from rdkit.Chem import rdDepictor
-from rdkit.Chem.Draw import rdMolDraw2D
-from IPython.display import SVG
 from openbabel import openbabel as ob
 from openbabel import pybel
-import os
-import os.path
-from PIL import Image
 import io
 import base64
-from io import StringIO
-import random
 
 # General settings
 conformer = ob.OBConformerSearch()
@@ -64,30 +54,6 @@ def smiles_to_image(input_smiles):
     img_str = pil_to_base64(pil_img)
     return img_str
 
-def prepare_select_substrates(input_file):
-    input_list = open(input_file, "r").read().splitlines()
-    output_list = []
-    for line in input_list:
-        name, smiles = line.split(";")
-        pil_img = smiles_to_image(smiles)
-        output_list.append([name,smiles,pil_img])
-
-    return output_list
-
-
-def prepare_substrate_list(input_file):
-    # initial_list = open(input_file,"r").read().splitlines()
-    substrate_list = []
-
-    for line in open(input_file, "r").read().splitlines():
-        line = line.split(";")
-        m = Chem.MolFromSmiles(line[1])
-        # image = Draw.MolToImage(m)
-        substrate_list.append(Draw.MolToImage(m))
-
-    return substrate_list
-
-
 def validate_input(input_file):
     valid_file = False
     with open(input_file) as i:
@@ -110,12 +76,10 @@ def validate_input(input_file):
 
 
 def prepare_reaction(smiles):
-    # substrates = ["name", "smiles"]
-    
+  
     substrates_mols = []
     for substrate in smiles:
         mol = Chem.MolFromSmiles(substrate)
-        # mol.SetProp('name', substrate[0])
         substrates_mols.append(mol)
 
     ## New
@@ -158,18 +122,7 @@ def prepare_reaction(smiles):
         n += 1
 
     info = [n, n_iso, n_diiso, n_ol, n_diol]
-    # """ 
-    #         Number of uploaded substrates: %i 
-            
-    #         Substrates types:
-            
-    #         - %i isocyanates
-    #         - %i diisocyanates
-    #         - %i alcohols/phenols
-    #         - %i diols
-            
-    #         """ % 
-
+    
     return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols
 
 
@@ -177,10 +130,6 @@ def perform_dimerization(a_list, b_list):
     reagents_smiles = []
     products_smiles = []
     products_list = []
-
-    # conversion = ob.OBConversion()
-    # conversion.SetInAndOutFormats("smi", "_png2")
-    # mol = ob.OBMol()
 
     for a in a_list:
         for b in b_list:
@@ -261,20 +210,20 @@ def perform_tetramerization(a_list, b_list):
 
     return reagents_smiles, products_smiles
 
-
-def process_smiles(products_list):
-    # if output:
-    # print('Products will be saved in SMILES format.')
-    # with open(output, 'w') as o:
-    i = 0
-    smiles = []
-    smiles.append('Nr\tSMILES\n')
-    for product in products_list:
-        i += 1
-        smiles.append(str(i) + '\t' + Chem.MolToSmiles(product) + '\n')
-        # print('Saving file: %s\n'%(output))
-        # print('------------------------------------------------')
-    return smiles
+def modify_molecule(smiles, condition):
+    replacement = ""
+    if condition == "CH3":
+        # Replace NCO group with CH3
+        replacement = '[CH3]'
+    elif condition == "NH2":
+        # Replace NCO group with NH3
+        replacement = '[NH2]'
+    elif condition == "N=C=O":
+        # Do nothing (leave NCO)
+        return smiles
+    new_mol = AllChem.ReplaceSubstructs(Chem.MolFromSmiles(smiles), Chem.MolFromSmarts('N=C=O'), Chem.MolFromSmarts(replacement), True)
+    
+    return Chem.MolToSmiles(new_mol[0])
 
 def generate_mol(smiles):
     mol = Chem.MolFromSmiles(smiles)
@@ -283,7 +232,6 @@ def generate_mol(smiles):
         return mol_block
     
 def generate_mol2(smiles, idx):
-
     conversion = ob.OBConversion()
     obmol = ob.OBMol()
     conversion.SetInAndOutFormats("smi", "mol2")
@@ -292,10 +240,9 @@ def generate_mol2(smiles, idx):
     gen3d.Do(obmol, "--best")
     pybel.Molecule(obmol).title = f"PU_{idx + 1}"
     mol2_content = conversion.WriteString(obmol)
-    
     return mol2_content
 
-def new_generate_conformers(smiles, idx):
+def generate_conformers(smiles, idx):
     num_conformers = 20
     conversion = ob.OBConversion()
     conversion.SetInAndOutFormats("smi", "mol2")
@@ -318,54 +265,9 @@ def new_generate_conformers(smiles, idx):
     
     return conformers_content
 
-def new2_generate_conformers(smiles, idx):
-    num_conformers = 20
-    conversion = ob.OBConversion()
-    conversion.SetInAndOutFormats("smi", "mol2")
-    
-    conformers_content = []
-    
-    mol = pybel.readstring("smi", smiles)
-    mol.addh()
-    mol.make3D()
-    
-    conformer_generator = ob.OBDiverseConfGen()
-    conformer_generator.SetNumBestConfs(num_conformers)  # Set the number of conformers to keep
-    conformer_generator.SetEnergyTolerance(50.0)  # Set energy tolerance for selection
-    conformer_generator.Conform(mol.OBMol)
-        
-    for j in range(mol.OBMol.NumConformers()):
-        mol.OBMol.SetConformer(j)
-        pybel.Molecule(mol.OBMol).title = f"PU_{idx}_{j + 1}"
-        mol_block = mol.write(format="mol2")
-        conformers_content.append(mol_block)
-    
-    return conformers_content
-
-
-
 def generate_image(smiles):
-
-    conversion = ob.OBConversion()
-    mol = ob.OBMol()
-
-    conversion.SetInAndOutFormats("smi", "png2")
-    
-    conversion.ReadString(mol, smiles)
-    image_content = conversion.WriteString(mol)
-
-    return image_content
-
-def new_generate_image(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    # conversion = ob.OBConversion()
-    # conversion.SetInAndOutFormats("smi", "can")
-    # conversion.ReadString(mol, smiles)
-    
-    # mol_block = mol.GetTriposMolBlock()
-    
+    mol = Chem.MolFromSmiles(smiles)  
     image = Chem.Draw.MolToImage(mol, size=(500, 500))
-    
     image_buffer = io.BytesIO()
     image.save(image_buffer, format='PNG')
     image_content = image_buffer.getvalue()

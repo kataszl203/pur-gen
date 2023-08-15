@@ -60,7 +60,7 @@ app.layout = html.Div(
             ]),
         html.Div(id = 'left-panel-before-reaction',
             children=[
-            html.H2("SELECT SUBSTRATES", style={'font-weight': 'normal', 'margin-top': '75px','margin-bottom': '20px', 'color': 'black',}),
+            html.H2("SELECT SUBSTRATES", style={'font-weight': 'normal', 'margin-top': '50px','margin-bottom': '20px', 'color': 'black',}),
             
             html.Div([
                 daq.BooleanSwitch(
@@ -140,11 +140,11 @@ app.layout = html.Div(
                     ],
                     value='2',  # Default selected value
                     labelStyle={'display': 'block', 
-                                'margin-top': '0',
+                                'margin-top': '-5px',
                                 'margin-bottom': '10px', 
                                 'margin-left': '20px',
                                 'color': '#555',
-                                'font-size': '14px',
+                                'font-size': '15px',
                                 'font-weight': '600',
                                 'line-height': '25px',
                                 'letter-spacing': '.1rem',
@@ -153,6 +153,10 @@ app.layout = html.Div(
                                 'font-weight': 'normal',
                                 'white-space': 'nowrap'},  # Display the labels on separate lines
                 ),
+            
+            
+            html.H2("SELECT CAPPING GROUP", style={'font-weight': 'normal'}),
+            dcc.Dropdown(['-NH2', '-CH3', '-N=C=O'], placeholder="Select isocyanate capping", id='capping-group', value='-N=C=O'),
             html.Button("MAKE OLIGOMERS!", id='make-oligomers-button', n_clicks=0, 
                         style={'margin-top': '30px'})
 
@@ -163,46 +167,49 @@ app.layout = html.Div(
         html.Div(id = 'left-panel-download', style = {'display':'none'},
             children = [
                 html.Div([
-                html.Button("GENERATE SMILES", id='generate-smiles', n_clicks=0 ),
+                html.Button("GENERATE SMILES", id='generate-smiles', n_clicks=0, style={'margin':'5px'} ),
                 
                 html.Div([
                     dcc.Loading(id='loading-smiles',
                                 style ={'margin-left': '15px'},
                                 type='dot',
-                                children=[html.Div(id="download-smiles", style={'textAlign': 'center', 'margin':'15px','opacity': '0.6'})]
+                                children=[html.Div(id="download-smiles", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ]),
-                html.Button("GENERATE 2D STRUCTURES (.mol)", id='generate-mol', n_clicks=0,),
+                html.Button("GENERATE 2D STRUCTURES (.mol)", id='generate-mol', n_clicks=0,style={'margin':'5px'}),
                 html.Div([
                     dcc.Loading(id='loading-mol',
                                 type='dot',
-                                children=[html.Div(id="download-mol", style={'textAlign': 'center','margin':'15px','opacity': '0.6'})]
+                                children=[html.Div(id="download-mol", style={'textAlign': 'center','margin':'5px','opacity': '0.6'})]
                     )
                 ]),
-                html.Button("GENERATE 3D STRUCTURES (.mol2)", id='generate-mol2', n_clicks=0, ),
+                html.Button("GENERATE 3D STRUCTURES (.mol2)", id='generate-mol2', n_clicks=0,style={'margin':'5px'} ),
                 html.Div([
                     dcc.Loading(id='loading-mol2',
                                 type='dot',
-                                children=[html.Div(id="download-mol2", style={'textAlign': 'center', 'margin':'15px','opacity': '0.6'})]
+                                children=[html.Div(id="download-mol2", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ]),
-                html.Button("GENERATE 3D STRUCTURES WITH CONFORMERS (.mol2)", id='generate-conformers', n_clicks=0,),
+                html.Button("GENERATE 3D STRUCTURES WITH CONFORMERS (.mol2)", id='generate-conformers', n_clicks=0,style={'margin':'5px'}),
                 html.Div([
                     dcc.Loading(id='loading-conformers',
                                 type='dot',
-                                children=[html.Div(id="download-conformers", style={'textAlign': 'center', 'margin':'15px', 'opacity': '0.6'})]
+                                children=[html.Div(id="download-conformers", style={'textAlign': 'center', 'margin':'5px', 'opacity': '0.6'})]
                     )
                 ]),
-                html.Button("GENERATE IMAGES (.png)", id='generate-images', n_clicks=0, ),
+                html.Button("GENERATE IMAGES (.png)", id='generate-images', n_clicks=0,style={'margin':'5px'} ),
                 html.Div([
                     dcc.Loading(id='loading-images',
                                 type='dot',
-                                children=[html.Div(id="download-images", style={'textAlign': 'center', 'margin':'15px','opacity': '0.6'})]
+                                children=[html.Div(id="download-images", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ])
                 ], style={'display': 'flex', 'flex-direction': 'column', 'align-items':'flex-start', 'textAlign': 'left'})
             ]),
-        dcc.Store(id='store-reaction')
+        dcc.Store(id='store-reaction'),
+        html.Div(id = 'left-panel-footer', children = [
+            # html.P("Contact", style={'position': 'absolute', 'bottom': '0', 'left': '0', 'right': '0', 'padding': '10px'})
+            ]),
     ]),
     html.Div([
         
@@ -224,24 +231,6 @@ app.layout = html.Div(
     ])
 
 @app.callback(
-    Output('uploaded-data', 'data'),
-    Input('upload-substrates', 'contents')
-    
-)
-
-def store_uploaded_data(contents):
-    if contents is not None:
-        # Decode the base64-encoded contents to get the file content
-        decoded_contents = base64.b64decode(contents.split(',')[1])
-        
-        # Convert the bytes content to a string
-        file_content = decoded_contents.decode('utf-8')
-           
-        return file_content
-    return None
-
-@app.callback(
-    
     Output('right-panel-content', 'style'),
     Output('hydroxyl-list', 'style'),
     Output('isocyanate-list', 'style'),
@@ -252,10 +241,7 @@ def store_uploaded_data(contents):
     Output('left-panel-download', 'style'),
     Output('store-reaction','data'),
     
-    
-    # Input('toggle-isocyanate-table', 'n_clicks'),
     Input('switch-isocyanate','on'),
-    # Input('toggle-hydroxyl-table', 'n_clicks'),
     Input('switch-hydroxyl','on'),
     Input('make-oligomers-button', 'n_clicks'),
     Input('select-size', 'value'),
@@ -263,23 +249,24 @@ def store_uploaded_data(contents):
     Input('hydroxyl-list-checkbox', 'value'),
     Input('upload-substrates', 'contents'),
     Input('uploaded-data', 'data'),
-    
-    
+    Input('capping-group', 'value') 
 )
-def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, isocyanate_value, hydroxyl_values, contents, file_content):
 
+def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, isocyanate_value, hydroxyl_values, contents, file_content, capping_group):
+
+    valid_file = "Accepted input file content: Name;SMILES"
+    
     if isocyanate_clicks and hydroxyl_clicks and make_oligomer_clicks == 0 :
-        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'block'}, {'flex': '1', 'padding': '10px', 'display':'block'}, [], {'display': 'block'}, [], [], {'display':'none'}, []
+        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'block'}, {'flex': '1', 'padding': '10px', 'display':'block'}, [], {'display': 'block'}, [], [valid_file], {'display':'none'}, []
     
     elif isocyanate_clicks and make_oligomer_clicks == 0 :
-        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'none'}, {'flex': '1', 'padding': '10px', 'display':'block'}, [], {'display': 'block'}, [], [], {'display':'none'}, []
+        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'none'}, {'flex': '1', 'padding': '10px', 'display':'block'}, [], {'display': 'block'}, [], [valid_file], {'display':'none'}, []
     
     elif hydroxyl_clicks and make_oligomer_clicks == 0 :
-        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'block'}, {'flex': '1', 'padding': '10px', 'display':'none'}, [], {'display': 'block'}, [], [], {'display':'none'}, []  
+        return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'block'}, {'flex': '1', 'padding': '10px', 'display':'none'}, [], {'display': 'block'}, [], [valid_file], {'display':'none'}, []  
     
      
     elif make_oligomer_clicks == 0:
-        valid_file = "Accepted input file content: Name;SMILES"
         if contents is not None:
             if file_content:
                 lines = file_content.splitlines()
@@ -347,6 +334,8 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                     
                     reagents_smiles, products_smiles = MakeOligomers_dash.perform_dimerization(iso_mols,poliol_mols)
                     
+                    capped_products = [MakeOligomers_dash.modify_molecule(product, capping_group[1:]) for product in products_smiles]
+                    
                     reactions = html.Div(
                         [
                             
@@ -354,15 +343,12 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                                 
                                 html.H4(["Reaction %i: "%(i+1)],style={'font-weight': 'bold', 'margin-left': '20px', 'margin-top': '-15px', 'margin-bottom':'0',
                                                                        'color': '#555',
-                                # 'text-align': 'left',
-                                'font-size': '15px',
-                                'font-weight': '600',
-                                # 'line-height': '25px',
-                                'letter-spacing': '.1rem',
-                                'text-transform': 'uppercase',
-                                'text-decoration': 'none',
-                                # 'font-weight': 'normal',
-                                'white-space': 'nowrap'}),
+                                                                        'font-size': '15px',
+                                                                        'font-weight': '600',
+                                                                        'letter-spacing': '.1rem',
+                                                                        'text-transform': 'uppercase',
+                                                                        'text-decoration': 'none',
+                                                                        'white-space': 'nowrap'}),
                                 html.Img(src='data:image/jpeg;base64,' + MakeOligomers_dash.smiles_to_image(reagents_smiles[i][0]), 
                                 style={'height': '150px','width':'auto', 'margin': '0'}),
                                 html.Img(src='assets/plus.png', 
@@ -376,7 +362,7 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                                 style={'height': '150px','width':'auto', 'margin': '0'}),
                                  
                             ])
-                            for i,product in enumerate(products_smiles)
+                            for i,product in enumerate(capped_products)
                         
                         ]
                     )
@@ -384,6 +370,8 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                 elif size_value == "3":
                     
                     reagents_smiles, products_smiles = MakeOligomers_dash.perform_trimerization(iso_mols,poliol_mols)
+                    
+                    capped_products = [MakeOligomers_dash.modify_molecule(product, capping_group[1:]) for product in products_smiles]
                     
                     reactions = html.Div(
                         [
@@ -408,7 +396,7 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                                 style={'height': '150px','width':'auto', 'margin': '0'}),
                                  
                             ])
-                            for i,product in enumerate(products_smiles)
+                            for i,product in enumerate(capped_products)
                         
                         ]
                     )
@@ -416,6 +404,8 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                 if size_value == "4":
                     
                     reagents_smiles, products_smiles = MakeOligomers_dash.perform_tetramerization(iso_mols,poliol_mols)
+                    
+                    capped_products = [MakeOligomers_dash.modify_molecule(product, capping_group[1:]) for product in products_smiles]
                     
                     reactions = html.Div(
                         [
@@ -444,7 +434,7 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
                                 style={'height': '150px','width':'auto', 'margin': '0'}),
                                  
                             ])
-                            for i,product in enumerate(products_smiles)
+                            for i,product in enumerate(capped_products)
                         
                         ]
                     )
@@ -486,8 +476,25 @@ def toggle_tables(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size
         
         ], {'display': 'none'}, [
             
-        html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], style = {'font-weight': 'normal', 'margin-top': '80px','margin-bottom':'40px','text-align': 'center',})
+        html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], style = {'font-weight': 'normal', 'margin-top': '100px','margin-bottom':'60px','text-align': 'center',})
             ], [], {'display': 'block'}, products_smiles
+
+@app.callback(
+    Output('uploaded-data', 'data'),
+    Input('upload-substrates', 'contents')
+    
+)
+
+def store_uploaded_data(contents):
+    if contents is not None:
+        # Decode the base64-encoded contents to get the file content
+        decoded_contents = base64.b64decode(contents.split(',')[1])
+        
+        # Convert the bytes content to a string
+        file_content = decoded_contents.decode('utf-8')
+           
+        return file_content
+    return None
 
 @app.callback(
     Output('download-smiles', 'children'),
@@ -578,7 +585,7 @@ def generate_conformers(n_clicks, data):
             # Create a zip file in the in-memory buffer
             with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
                 for idx, smiles in enumerate(data):
-                    conformers_content = MakeOligomers_dash.new_generate_conformers(smiles, idx)
+                    conformers_content = MakeOligomers_dash.generate_conformers(smiles, idx)
                     for conf_num, conformer in enumerate(conformers_content):
                         mol_filename = f"PU_{idx + 1}_{conf_num}.mol2"
                         zipf.writestr(mol_filename, conformer)
@@ -604,7 +611,7 @@ def generate_images(n_clicks, data):
             # Create a zip file in the in-memory buffer
             with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
                 for idx, smiles in enumerate(data):
-                    mol_block = MakeOligomers_dash.new_generate_image(smiles)
+                    mol_block = MakeOligomers_dash.generate_image(smiles)
                     mol_filename = f"PU_{idx + 1}.png"
                     zipf.writestr(mol_filename, mol_block)
 
