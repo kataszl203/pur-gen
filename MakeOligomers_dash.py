@@ -54,27 +54,6 @@ def smiles_to_image(input_smiles):
     img_str = pil_to_base64(pil_img)
     return img_str
 
-def validate_input(input_file):
-    valid_file = False
-    with open(input_file) as i:
-        first_line = i.readline()
-        second_line = i.readline()
-    if first_line == 'Name;SMILES\n':
-        title_line = True
-        valid_file = True
-    else:
-        title_line = False
-
-        if second_line:
-            if len(second_line.split(';')) == 2:
-                if Chem.MolFromSmiles(second_line.split(';')[1]):
-                    valid_file = True
-                else:
-                    print("No smiles in input file")
-
-    return title_line, valid_file
-
-
 def prepare_reaction(smiles):
   
     substrates_mols = []
