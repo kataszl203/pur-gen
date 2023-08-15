@@ -1,6 +1,6 @@
 # oligomer_webapp
 Web application for the tool oligomer.
-![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/133d98c3-1fa5-4b2e-b78b-c147e4763247)
+![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/c61831f7-8555-45b0-b2bd-f8609c794078)
 
 Used packages:
 
@@ -8,7 +8,7 @@ RDKit https://www.rdkit.org/docs/index.html
 
 Pybel https://openbabel.org/docs/dev/UseTheLibrary/Python_Pybel.html
 
-Shiny for Python https://shiny.rstudio.com/py/
+Dash Python https://dash.plotly.com/
 
 ## Dependencies for Debian/Ubuntu
 ### Libraries needed to run the script
@@ -38,8 +38,7 @@ $apt -y install --no-install-recommends\
                 rdkit-data\
                 wget
 $pip install matplotlib
-$pip install shiny
-$pip install shinywidgets
+$pip install dash dash-html-components dash-core-components
 ```
 ### Build patched openbabel
 ```
