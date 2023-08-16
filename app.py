@@ -60,14 +60,14 @@ app.layout = html.Div(
             ]),
         html.Div(id = 'left-panel-before-reaction',
             children=[
-            html.H2("SELECT SUBSTRATES", style={'font-weight': 'normal', 'margin-top': '50px','margin-bottom': '20px', 'color': 'black',}),
+            html.H3("SELECT SUBSTRATES", style={'font-weight': 'normal', 'margin-top': '30px','margin-bottom': '10px', 'color': 'black',}),
             
             html.Div([
                 daq.BooleanSwitch(
                     id='switch-isocyanate',
                     on=False),
-                html.H4("Show isocyanates", style={'font-weight': 'normal','margin-top': '0px', 'margin-bottom': '30px', 'margin-left': '10px',
-                                                   'color': '#555',
+                html.H4("Show isocyanates", style={'font-weight': 'normal','margin-top': '0px', 'margin-bottom': '10px', 'margin-left': '10px',
+                                                   'color': 'black',
                                 'font-size': '14px',
                                 'font-weight': '600',
                                 'line-height': '25px',
@@ -83,8 +83,8 @@ app.layout = html.Div(
                 daq.BooleanSwitch(
                     id='switch-hydroxyl',
                     on=False),
-                html.H4("Show hydroxyl compounds", style={'font-weight': 'normal','margin-top': '0px', 'margin-bottom': '30px', 'margin-left': '10px',
-                                                          'color': '#555',
+                html.H4("Show hydroxyl compounds", style={'font-weight': 'normal','margin-top': '0px', 'margin-bottom': '10px', 'margin-left': '10px',
+                                                          'color': 'black',
                                 'font-size': '14px',
                                 'font-weight': '600',
                                 'line-height': '25px',
@@ -124,7 +124,7 @@ app.layout = html.Div(
                 ],),
                  
             
-            html.H2("SELECT SIZE", style={'font-weight': 'normal'}),
+            html.H3("SELECT SIZE", style={'font-weight': 'normal', 'margin-top':'-20px', 'margin-bottom':'8px'}),
             dcc.RadioItems(
                     id='select-size',
                     options=[
@@ -136,7 +136,7 @@ app.layout = html.Div(
                     labelStyle={'display': 'block', 
                                 'margin-top': '-5px',
                                 'margin-bottom': '10px', 
-                                'margin-left': '20px',
+                                'margin-left': '5px',
                                 'color': '#555',
                                 'font-size': '15px',
                                 'font-weight': '600',
@@ -149,10 +149,10 @@ app.layout = html.Div(
                 ),
             
             
-            html.H2("SELECT CAPPING GROUP", style={'font-weight': 'normal'}),
-            dcc.Dropdown(['-NH2', '-CH3', '-N=C=O', '-NC(=O)OH'], placeholder="Select isocyanate capping", id='capping-group', value='-N=C=O'),
+            html.H3("SELECT CAPPING GROUP", style={'font-weight': 'normal', 'margin-top':'-5px', 'margin-bottom':'5px'}),
+            dcc.Dropdown(['-NH2', '-CH3', '-N=C=O', '-NC(=O)OH'], placeholder="Select isocyanate capping group", id='capping-group'),
             html.Button("MAKE OLIGOMERS!", id='make-oligomers-button', n_clicks=0, 
-                        style={'margin-top': '30px'})
+                        style={'margin-top': '20px', 'justify-content': 'center'})
 
             ]),
     
@@ -161,6 +161,7 @@ app.layout = html.Div(
         html.Div(id = 'left-panel-download', style = {'display':'none'},
             children = [
                 html.Div([
+                html.H5("Save all generated PU fragments in SMILES (PU.txt).", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'center', 'font-weight': 'normal'}), 
                 html.Button("GENERATE SMILES", id='generate-smiles', n_clicks=0, style={'margin':'5px'} ),
                 
                 html.Div([
@@ -170,6 +171,7 @@ app.layout = html.Div(
                                 children=[html.Div(id="download-smiles", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ]),
+                html.H5("Save generated PU fragments as 2D .mol files.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'center', 'font-weight': 'normal'}), 
                 html.Button("GENERATE 2D STRUCTURES (.mol)", id='generate-mol', n_clicks=0,style={'margin':'5px'}),
                 html.Div([
                     dcc.Loading(id='loading-mol',
@@ -177,6 +179,7 @@ app.layout = html.Div(
                                 children=[html.Div(id="download-mol", style={'textAlign': 'center','margin':'5px','opacity': '0.6'})]
                     )
                 ]),
+                html.H5("Save generated PU fragments as 3D .mol2 files.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'center', 'font-weight': 'normal'}),
                 html.Button("GENERATE 3D STRUCTURES (.mol2)", id='generate-mol2', n_clicks=0,style={'margin':'5px'} ),
                 html.Div([
                     dcc.Loading(id='loading-mol2',
@@ -184,6 +187,7 @@ app.layout = html.Div(
                                 children=[html.Div(id="download-mol2", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ]),
+                html.H5("Generate 20 conformers for 3D structures of PU fragments. This action can take a while depending on the number of products.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'left', 'font-weight': 'normal'}),
                 html.Button("GENERATE 3D STRUCTURES WITH CONFORMERS (.mol2)", id='generate-conformers', n_clicks=0,style={'margin':'5px'}),
                 html.Div([
                     dcc.Loading(id='loading-conformers',
@@ -191,6 +195,7 @@ app.layout = html.Div(
                                 children=[html.Div(id="download-conformers", style={'textAlign': 'center', 'margin':'5px', 'opacity': '0.6'})]
                     )
                 ]),
+                html.H5("Save generated PU fragments as images.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'center', 'font-weight': 'normal'}),
                 html.Button("GENERATE IMAGES (.png)", id='generate-images', n_clicks=0,style={'margin':'5px'} ),
                 html.Div([
                     dcc.Loading(id='loading-images',
@@ -202,17 +207,19 @@ app.layout = html.Div(
             ]),
         dcc.Store(id='store-reaction'),
         html.Div(id = 'left-panel-footer', children = [
-            html.H3("related publication:", style={'color': '5b5d74',
+            html.H3("See the related publication", style={'color': '5b5d74',
                                                 'font-size': '15px',
                                                 'font-weight': '600',
                                                 'line-height': '15px',
                                                 'letter-spacing': '.1rem',
                                                 'text-transform': 'uppercase',
                                                 'text-decoration': 'none',
-                                                'font-weight': 'normal',
+                                                'font-weight': 'bold',
                                                 'white-space': 'nowrap',
                                                 'textAlign': 'center',
-                                                'margin-top':'50px'}),
+                                                'margin-top':'30px',
+                                                'margin-bottom':'5px',
+                                                'opacity': '0.6'}),
             html.A("Title of the publication, Authors, 2023", href='http://www.doi.pl/', style={'color': '5b5d74',
                                                 'font-size': '14px',
                                                 'font-weight': '600',
@@ -225,7 +232,23 @@ app.layout = html.Div(
                                                 'display': 'flex',  # Set display to flex
                                                 'justify-content': 'center',  # Center horizontally
                                                 'align-items': 'center',  # Center vertically
-                                                'margin-bottom': '20px'
+                                                'margin-bottom': '15px'
+                                                }),
+             
+            html.A("GitHub repository of the project", href='https://github.com/kataszl203', style={'color': '5b5d74',
+                                                'font-size': '14px',
+                                                'font-weight': '600',
+                                                'line-height': '14px',
+                                                'letter-spacing': '.1rem',
+                                                # 'text-transform': 'uppercase',
+                                                'text-decoration': 'none',
+                                                'font-weight': 'bold',
+                                                'white-space': 'nowrap',
+                                                'display': 'flex',  # Set display to flex
+                                                'justify-content': 'center',  # Center horizontally
+                                                'align-items': 'center',  # Center vertically
+                                                'margin-bottom': '15px',
+                                                'opacity': '0.6'
                                                 }),
             html.H3("Contact Information", style={'color': '5b5d74',
                                                 'font-size': '15px',
@@ -234,16 +257,17 @@ app.layout = html.Div(
                                                 'letter-spacing': '.1rem',
                                                 'text-transform': 'uppercase',
                                                 'text-decoration': 'none',
-                                                'font-weight': 'normal',
+                                                'font-weight': 'bold',
                                                 'white-space': 'nowrap',
                                                 'textAlign': 'center',
-                                                'margin-top':'50px'}),
+                                                'margin-bottom':'-5px',
+                                                'opacity': '0.6'}),
             html.H3("EMAIL: k.szleper@tunnelinggroup.pl", style={'color': '5b5d74',
                                                 'font-size': '14px',
                                                 'font-weight': '600',
                                                 'line-height': '14px',
                                                 'letter-spacing': '.1rem',
-                                                # 'text-transform': 'uppercase',
+                                                'text-transform': 'uppercase',
                                                 'text-decoration': 'none',
                                                 'font-weight': 'normal',
                                                 'white-space': 'nowrap',
@@ -256,10 +280,12 @@ app.layout = html.Div(
                                                 'letter-spacing': '.1rem',
                                                 # 'text-transform': 'uppercase',
                                                 'text-decoration': 'none',
-                                                'font-weight': 'normal',
+                                                'font-weight': 'bold',
                                                 'white-space': 'nowrap',
                                                 'textAlign': 'center',
-                                                'margin-top': '10px'
+                                                'margin-top': '15px',
+                                                'margin-bottom':'5px',
+                                                'opacity': '0.6'
                                                 }),
             html.A("Tunneling Group", href='http://www.tunnelinggroup.pl/', title = 'http://www.tunnelinggroup.pl/', style={'color': '5b5d74',
                                                 'font-size': '18px',
@@ -398,6 +424,8 @@ def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, siz
             
             if reaction:
                 reaction_output = "PERFORMED REACTIONS"
+                if not capping_group:
+                    capping_group="-N=C=O"
                 
                 if size_value == "2":
                     
@@ -522,7 +550,8 @@ def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, siz
         return {'display': 'flex'}, {'flex': '1', 'padding': '10px', 'display':'none'}, {'flex': '1', 'padding': '10px', 'display':'none'},[
         
         html.Img(src='assets/oligomer_reaction.png', style={'max-width': '100%', 'height': 'auto'}),
-        html.Div([html.Div('Number of uploaded substrates: %i'%info[0], style={'margin-bottom':'10px', 'margin-top': '-50px', 'margin-left':'20px'}),
+        html.Div([html.Div('SUMMARY', style={'margin-bottom':'10px', 'margin-top': '-50px', 'margin-left':'20px', 'font-weight':'bold', 'font-size':'18px', 'opacity':'0.6'}),
+                  html.Div('Number of uploaded substrates: %i'%info[0], style={'margin-bottom':'10px', 'margin-top': '10px', 'margin-left':'20px'}),
                   html.Div('Substrates types:', style={'margin-left':'20px'}),
                   html.Div('%i isocyanates'%info[1], style={'margin-left':'30px'}),
                   html.Div('%i diisocyanates'%info[2], style={'margin-left':'30px'}),
@@ -544,8 +573,18 @@ def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, siz
         
         
         ], {'display': 'none'}, [
+        
+        html.A(html.Button('Main page'),href='/', style={'opacity':'0.9', 'border-radius': '1px', 'margin-left':'5px'}),
             
-        html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], style = {'font-weight': 'normal', 'margin-top': '100px','margin-bottom':'60px','text-align': 'center',})
+        html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], style = {'font-weight': 'bold', 'margin-top': '50px','margin-bottom':'20px','text-align': 'center',
+                                                                              'color': '#555',
+                                                                                'font-size': '18px',
+                                                                                'font-weight': '600',
+                                                                                'line-height': '18px',
+                                                                                'letter-spacing': '.1rem',
+                                                                                'text-transform': 'uppercase',
+                                                                                'text-decoration': 'none',
+                                                                                'white-space': 'nowrap'})
             ], [], {'display': 'block'}, products_smiles
 
 @app.callback(
