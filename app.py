@@ -24,12 +24,14 @@ app = dash.Dash(__name__)
 isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/isocyanates.txt", "r").read().splitlines()]
 hydroxyl_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/poliols.txt", "r").read().splitlines()]
 
-def create_checkbox_list(options, table_title, table_id, checklist_id):
+def create_checkbox_list(options, table_title, table_id, checkall_id, checklist_id):
     return html.Div(
         style={'flex': '1', 'padding': '10px', 'display':'none'},
         id = table_id,
         children = [
             html.H3(table_title, style={'text-align': 'left'}),
+            
+            dcc.Checklist( id = checkall_id, options = [{'label': 'select all', 'value':'all'}], value = [], style={'margin-bottom':'10px', 'font-weight':'lighter'}),
             
             dcc.Checklist(
                 id = checklist_id,
@@ -44,8 +46,8 @@ def create_checkbox_list(options, table_title, table_id, checklist_id):
                 value=[],)
         ])
     
-checkbox_list_hydroxyl = create_checkbox_list(hydroxyl_list, "Select hydroxyl compounds:", 'hydroxyl-list', 'hydroxyl-list-checkbox')
-checkbox_list_isocyanate = create_checkbox_list(isocyanate_list, "Select isocyanates: ", 'isocyanate-list', 'isocyanate-list-checkbox')
+checkbox_list_hydroxyl = create_checkbox_list(hydroxyl_list, "Select hydroxyl compounds:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox')
+checkbox_list_isocyanate = create_checkbox_list(isocyanate_list, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox')
 
 # Define the layout of the app
 app.layout = html.Div(
@@ -301,9 +303,6 @@ app.layout = html.Div(
                                                 'align-items': 'center',  # Center vertically
                                                 'margin-bottom': '20px'
                                                 })
-        
-             
-            # html.P("Contact", style={'position': 'absolute', 'bottom': '0', 'left': '0', 'right': '0', 'padding': '10px'})
             ]),
     ]),
     html.Div([
@@ -340,6 +339,8 @@ app.layout = html.Div(
     Input('switch-hydroxyl','on'),
     Input('make-oligomers-button', 'n_clicks'),
     Input('select-size', 'value'),
+    Input('select-all-isocyanate', 'value'),
+    Input('select-all-hydroxyl', 'value'),
     Input('isocyanate-list-checkbox', 'value'),
     Input('hydroxyl-list-checkbox', 'value'),
     Input('upload-substrates', 'contents'),
@@ -347,7 +348,7 @@ app.layout = html.Div(
     Input('capping-group', 'value') 
 )
 
-def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, isocyanate_value, hydroxyl_values, contents, file_content, capping_group):
+def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group):
 
     valid_file = "Accepted input file content: Name;SMILES"
     
