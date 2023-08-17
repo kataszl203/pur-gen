@@ -38,7 +38,7 @@ $apt -y install --no-install-recommends\
                 rdkit-data\
                 wget
 $pip install matplotlib
-$pip install dash dash-html-components dash-core-components
+$pip install dash dash-html-components dash-core-components dash-daq
 ```
 ### Build patched openbabel
 ```
