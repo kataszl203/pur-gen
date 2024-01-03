@@ -1,7 +1,6 @@
 from dash import html
 import utils
 
-
 def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group, isocyanate_all, hydroxyl_all):
     
     valid_file = "Accepted input file content: Name;SMILES"
