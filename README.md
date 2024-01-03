@@ -1,6 +1,5 @@
 # oligomer_webapp
 Web application for the tool oligomer.
-![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/c61831f7-8555-45b0-b2bd-f8609c794078)
 
 Used packages:
 
@@ -47,5 +46,5 @@ $./build_openbabel.sh
 ```
 ### Running the web application locally
 ```
-$/usr/bin/python -m shiny run --reload app.py
+$/usr/bin/python app.py
 ```
