@@ -1,4 +1,4 @@
-# PURge - polyurethane fragments generator
+# PURGE - polyurethane fragments generator
 ![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/d0721108-889d-4258-a42d-891c39f91c00)
 
 Used packages:
