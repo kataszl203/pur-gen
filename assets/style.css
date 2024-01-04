@@ -66,3 +66,16 @@ input[type="button"].button-primary:focus {
   content: "";
   display: table;
   clear: both; }
+
+
+  .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    /* background-color: #00ff00; Set your desired color */
+    /* margin-right: 10px; Adjust margin as needed */
+    /* Centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

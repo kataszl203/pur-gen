@@ -5,12 +5,14 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
     
     valid_file = "Accepted input file content: Name;SMILES"
     
-    right_panel_style = {'display': 'flex'}
-    
     if isocyanate_clicks and hydroxyl_clicks and make_oligomer_clicks == 0 :
         
+        right_panel_content_style = {'display': 'flex'}
+        main_page_style = {'display': 'none'}
         hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
         isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
+        right_panel_header_style = {'display': 'none'}
+        main_after_reaction_style = {'display':'none'}
         reaction_output_children = []
         left_panel_before_style = {'display': 'block'}
         left_panel_after_children = []
@@ -20,8 +22,12 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
     
     elif isocyanate_clicks and make_oligomer_clicks == 0 :
         
+        right_panel_content_style = {'display': 'flex'}
+        main_page_style = {'display': 'none'}
         hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
         isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
+        right_panel_header_style = {'display': 'none'}
+        main_after_reaction_style = {'display':'none'}
         reaction_output_children = []
         left_panel_before_style = {'display': 'block'}
         left_panel_after_children = []
@@ -31,8 +37,12 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
     
     elif hydroxyl_clicks and make_oligomer_clicks == 0 :
         
+        right_panel_content_style = {'display': 'flex'}
+        main_page_style = {'display': 'none'}
         hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
         isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
+        right_panel_header_style = {'display': 'none'}
+        main_after_reaction_style = {'display':'none'}
         reaction_output_children = []
         left_panel_before_style = {'display': 'block'}
         left_panel_after_children = []
@@ -73,9 +83,13 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
             else:
                 valid_file = "File is empty or wrong file format."
                         
+        right_panel_content_style = {'display': 'block'}
+        main_page_style = {'display': 'block'}
         hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
         isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        reaction_output_children = [html.Img(src='assets/purge_main.png', style={'max-width': '100%', 'height': 'auto'})]
+        right_panel_header_style = {'max-width': '100%','height': 'auto','opacity':'0.5','display': 'block'}
+        main_after_reaction_style = {'display':'none'}
+        reaction_output_children = []
         left_panel_before_style = {'display': 'block'}
         left_panel_after_children = []
         successful_upload_children = [valid_file]
@@ -243,11 +257,13 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
         else:
             info = "Select substrates!"
 
-        
+        right_panel_content_style = {'display': 'block'}
+        main_page_style = {'display': 'none'}
         hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
         isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        reaction_output_children = [html.Img(src='assets/purge_reaction.png', style={'max-width': '100%', 'height': 'auto'}),
-                                    html.Div([html.Div('SUMMARY', style={'margin-bottom':'10px', 'margin-top': '-50px', 'margin-left':'20px', 'font-weight':'bold', 'font-size':'18px', 'opacity':'0.6'}),
+        right_panel_header_style = {'max-width': '100%','height': 'auto','opacity':'0.5','display': 'block'}
+        main_after_reaction_style = {'display':'block', 'margin-top':'20px', 'margin-bottom':'20px'}
+        reaction_output_children = [html.Div([html.Div('SUMMARY', style={'margin-bottom':'10px', 'margin-top': '50px', 'margin-left':'20px', 'font-weight':'bold', 'font-size':'18px', 'opacity':'0.6'}),
                                               html.Div('Number of uploaded substrates: %i'%info[0], style={'margin-bottom':'10px', 'margin-top': '10px', 'margin-left':'20px'}),
                                               html.Div('Substrates types:', style={'margin-left':'20px'}),
                                               html.Div('%i isocyanates'%info[1], style={'margin-left':'30px'}),
@@ -268,12 +284,7 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
                                                                         'text-align': 'center'}),
                                     html.Div(reactions)]
         left_panel_before_style = {'display': 'none'}
-        left_panel_after_children = [html.A(html.Button('Main page'),
-                                            href='/', 
-                                            style={'opacity':'0.9', 
-                                                   'border-radius': '1px', 
-                                                   'margin-left':'5px'}),
-                                     html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], 
+        left_panel_after_children = [html.H2(["%i GENERATED STRUCTURES" %(len(products_smiles))], 
                                              style = {'font-weight': 'bold', 
                                                       'margin-top': '50px',
                                                       'margin-bottom':'20px',
@@ -290,4 +301,4 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
         left_panel_download_style = {'display':'block'}
         store_reaction_data = capped_products
         
-    return right_panel_style, hydroxyl_list_style, isocyanate_list_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data
+    return right_panel_content_style, main_page_style, hydroxyl_list_style, isocyanate_list_style, right_panel_header_style, main_after_reaction_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data

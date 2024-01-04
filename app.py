@@ -29,15 +29,15 @@ app.layout = html.Div(
                                 'padding': '5px',
                                 'background-color': '#F0F0F0'},
                        children = [html.Div(id = 'left-panel-header',
-                                            children = [html.Img(src='assets/purge.png', 
-                                            style={'max-width': '85%', 
-                                                    'height': 'auto'}),
-                                            ]),
+                                            children = [html.A(html.Img(src='assets/purge.png', 
+                                                                 style={'max-width': '85%', 
+                                                                        'height': 'auto'}), href='/'),
+                                                        ]),
                                    html.Div(id = 'left-panel-before-reaction',
                                             children = [html.H3("SELECT SUBSTRATES",
                                                                 style={'font-weight': 'normal',
-                                                                       'margin-top': '0px',
-                                                                       'margin-bottom': '10px',
+                                                                       'margin-top': '20px',
+                                                                       'margin-bottom': '15px',
                                                                        'color': 'black',}),
                                                         layouts.create_switch_with_label('show isocyanates','switch-isocyanate'),
                                                         layouts.create_switch_with_label('show hydroxyl compounds','switch-hydroxyl'),
@@ -55,6 +55,7 @@ app.layout = html.Div(
                   html.Div(id = 'right-panel-content',
                            children = [layouts.create_checkbox_list(isocyanate_list, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox'),
                                        layouts.create_checkbox_list(hydroxyl_list, "Select hydroxyl compounds:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
+                                       layouts.create_right_panel(),
                                        html.Div(id = 'reaction-output',
                                                 children = [],
                                                 style = {'display':'block'}
@@ -65,8 +66,11 @@ app.layout = html.Div(
 
 @app.callback(
     Output('right-panel-content', 'style'),
+    Output('main-page', 'style'),
     Output('hydroxyl-list', 'style'),
     Output('isocyanate-list', 'style'),
+    Output('right-panel-header', 'style'),
+    Output('main-after-reaction', 'style'),
     Output('reaction-output', 'children'),
     Output('left-panel-before-reaction', 'style'),
     Output('left-panel-after-reaction', 'children'),
@@ -88,9 +92,9 @@ app.layout = html.Div(
 )
 
 def make_oligomers(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group):
-    right_panel_style, hydroxyl_list_style, isocyanate_list_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data = callbacks.handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group, isocyanate_all, hydroxyl_all)
+    right_panel_content_style, main_page_style, hydroxyl_list_style, isocyanate_list_style, right_panel_header_style, main_after_reaction_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data = callbacks.handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group, isocyanate_all, hydroxyl_all)
     
-    return right_panel_style, hydroxyl_list_style, isocyanate_list_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data
+    return right_panel_content_style, main_page_style, hydroxyl_list_style, isocyanate_list_style, right_panel_header_style, main_after_reaction_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data
 
 
 @app.callback(
