@@ -1,16 +1,65 @@
 from dash import html
 import utils
 
-def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_values, contents, file_content, capping_group, isocyanate_all, hydroxyl_all):
+def validate_input_file(file_content, isocyanate_value, hydroxyl_value):
+    if file_content:
+        lines = file_content.splitlines()
+        
+        if lines:
+            if lines[0] == 'Name;SMILES':
+                line_num = range(1, len(lines))
+            else:
+                line_num = range(len(lines))
+            
+            smiles = isocyanate_value + hydroxyl_value    
+            for l in line_num:
+                if lines[l] != "":
+                    try:
+                        comp = lines[l].split(";")
+                        valid_smiles = utils.is_valid_smiles(comp[1])
+                        if not valid_smiles:
+                            valid_file = "Compounds in SMILES not detected."
+                            break
+                        else:
+                            if comp[1] not in smiles:
+                                smiles.append(comp[1])
+                            valid_file = "File is uploaded."
+                    except:
+                        valid_file = "Wrong file format."
+                    
+        else:
+            valid_file = "File is empty or wrong file format."
+                        
+    else:
+        valid_file = "File is empty or wrong file format."
+    
+    return valid_file
+
+
+def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clicks, size_value, all_isocyanate, all_hydroxyl, isocyanate_value, hydroxyl_value, contents, file_content, capping_group, isocyanate_all, hydroxyl_all):
+    
     
     valid_file = "Accepted input file content: Name;SMILES"
     
-    if isocyanate_clicks and hydroxyl_clicks and make_oligomer_clicks == 0 :
+    right_panel_content_style = {'display': 'block'}
+    main_page_style = {'display': 'block'}
+    hydroxyl_list_style = {'display':'none'}
+    isocyanate_list_style = {'display':'none'}
+    right_panel_header_style = {'max-width': '100%','height': 'auto','opacity':'0.5','display': 'flex'}
+    main_after_reaction_style = {'display':'none'}
+    reaction_output_children = []
+    left_panel_before_style = {'display': 'block'}
+    left_panel_after_children = []
+    successful_upload_children = [valid_file]
+    left_panel_download_style = {'display':'none'}
+    store_reaction_data = [] 
+    
+    # Show isocyanate and/or hydroxyl lists
+    
+    if (isocyanate_clicks or hydroxyl_clicks) and not make_oligomer_clicks:
         
         right_panel_content_style = {'display': 'flex'}
         main_page_style = {'display': 'none'}
-        hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
-        isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
         right_panel_header_style = {'display': 'none'}
         main_after_reaction_style = {'display':'none'}
         reaction_output_children = []
@@ -19,84 +68,28 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
         successful_upload_children = [valid_file]
         left_panel_download_style = {'display':'none'}
         store_reaction_data = []
-    
-    elif isocyanate_clicks and make_oligomer_clicks == 0 :
         
-        right_panel_content_style = {'display': 'flex'}
-        main_page_style = {'display': 'none'}
-        hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
-        right_panel_header_style = {'display': 'none'}
-        main_after_reaction_style = {'display':'none'}
-        reaction_output_children = []
-        left_panel_before_style = {'display': 'block'}
-        left_panel_after_children = []
-        successful_upload_children = [valid_file]
-        left_panel_download_style = {'display':'none'}
-        store_reaction_data = []
-    
-    elif hydroxyl_clicks and make_oligomer_clicks == 0 :
+        if isocyanate_clicks and hydroxyl_clicks:
+            
+            hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
+            isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
         
-        right_panel_content_style = {'display': 'flex'}
-        main_page_style = {'display': 'none'}
-        hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
-        isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        right_panel_header_style = {'display': 'none'}
-        main_after_reaction_style = {'display':'none'}
-        reaction_output_children = []
-        left_panel_before_style = {'display': 'block'}
-        left_panel_after_children = []
-        successful_upload_children = [valid_file]
-        left_panel_download_style = {'display':'none'}
-        store_reaction_data = []
+        elif isocyanate_clicks:
+            
+            hydroxyl_list_style = {'display':'none'}
+            isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
     
-    elif make_oligomer_clicks == 0:
-        if contents is not None:
-            if file_content:
-                lines = file_content.splitlines()
-                
-                if lines:
-                    if lines[0] == 'Name;SMILES':
-                        line_num = range(1, len(lines))
-                    else:
-                        line_num = range(len(lines))
-                    
-                    smiles = isocyanate_value + hydroxyl_values    
-                    for l in line_num:
-                        if lines[l] != "":
-                            try:
-                                comp = lines[l].split(";")
-                                valid_smiles = utils.is_valid_smiles(comp[1])
-                                if not valid_smiles:
-                                    valid_file = "Compounds in SMILES not detected."
-                                    break
-                                else:
-                                    if comp[1] not in smiles:
-                                        smiles.append(comp[1])
-                                    valid_file = "File is uploaded."
-                            except:
-                                valid_file = "Wrong file format."
-                            
-                else:
-                    valid_file = "File is empty or wrong file format."
-                                
-            else:
-                valid_file = "File is empty or wrong file format."
-                        
-        right_panel_content_style = {'display': 'block'}
-        main_page_style = {'display': 'block'}
-        hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        isocyanate_list_style = {'flex': '1', 'padding': '10px', 'display':'none'}
-        right_panel_header_style = {'max-width': '100%','height': 'auto','opacity':'0.5','display': 'block'}
-        main_after_reaction_style = {'display':'none'}
-        reaction_output_children = []
-        left_panel_before_style = {'display': 'block'}
-        left_panel_after_children = []
-        successful_upload_children = [valid_file]
-        left_panel_download_style = {'display':'none'}
-        store_reaction_data = []
+        elif hydroxyl_clicks:
+            
+            hydroxyl_list_style = {'flex': '1', 'padding': '10px', 'display':'block'}
+            isocyanate_list_style = {'display':'none'}
+        
     
-    elif make_oligomer_clicks: 
+    elif contents is not None:
+        valid_file = validate_input_file(file_content, isocyanate_value, hydroxyl_value)          
+        successful_upload_children = [valid_file]
+    
+    elif make_oligomer_clicks and ((hydroxyl_value  and isocyanate_value) or ((hydroxyl_value or isocyanate_value) and file_content)): 
         
         if all_hydroxyl and all_isocyanate:
             smiles = isocyanate_all + hydroxyl_all
@@ -105,9 +98,9 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
             smiles = isocyanate_value + hydroxyl_all
             
         elif all_isocyanate and not all_hydroxyl:
-            smiles = isocyanate_all + hydroxyl_values        
+            smiles = isocyanate_all + hydroxyl_value        
         else:
-            smiles = isocyanate_value + hydroxyl_values
+            smiles = isocyanate_value + hydroxyl_value
             
         
         if file_content:
@@ -216,7 +209,6 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
                     
                     reactions = html.Div(
                         [
-                            
                             html.Div([
                                 
                                 html.H4(["Reaction %i: "%(i+1)],style={'font-weight': 'normal', 'margin-left': '20px', 'margin': '0'}),
@@ -269,7 +261,11 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
                                               html.Div('%i isocyanates'%info[1], style={'margin-left':'30px'}),
                                               html.Div('%i diisocyanates'%info[2], style={'margin-left':'30px'}),
                                               html.Div('%i alcohols/phenols'%info[3], style={'margin-left':'30px'}),
-                                              html.Div('%i diols'%info[4], style={'margin-left':'30px'}) ], 
+                                              html.Div('%i diols'%info[4], style={'margin-left':'30px'}), 
+                                              html.Div('Isocyanate capping group: %s'%capping_group, style={'margin-left':'20px', 'margin-top': '10px'}),
+                                              html.Div('Selected size: %s units'%size_value, style={'margin-left':'20px', 'margin-top': '10px'}),
+                                              ],
+                                             
                                              style = {'color': '#555',
                                                       'text-align': 'left',
                                                       'font-size': '16px',
@@ -300,5 +296,8 @@ def handle_display_styles(isocyanate_clicks, hydroxyl_clicks, make_oligomer_clic
         successful_upload_children = []
         left_panel_download_style = {'display':'block'}
         store_reaction_data = capped_products
+        
+    
+    
         
     return right_panel_content_style, main_page_style, hydroxyl_list_style, isocyanate_list_style, right_panel_header_style, main_after_reaction_style, reaction_output_children, left_panel_before_style, left_panel_after_children, successful_upload_children, left_panel_download_style, store_reaction_data

@@ -128,7 +128,7 @@ def create_switch_with_label(label_text, switch_id):
                     'margin-top': '0px', 
                     'margin-bottom': '10px', 
                     'margin-left': '10px',
-                    'color': 'black',
+                    'color': 'gray',
                     'font-size': '14px',
                     'font-weight': '600',
                     'line-height': '25px',
@@ -182,7 +182,7 @@ def create_select_size_component():
                 'margin-top': '-5px',
                 'margin-bottom': '10px',
                 'margin-left': '5px',
-                'color': '#555',
+                'color': 'gray',
                 'font-size': '15px',
                 'font-weight': '600',
                 'line-height': '25px',
@@ -240,7 +240,8 @@ def create_download_panel():
                                 children=[html.Div(id="download-mol2", style={'textAlign': 'center', 'margin':'5px','opacity': '0.6'})]
                     )
                 ]),
-                html.H5("Generate 20 conformers for 3D structures of PU fragments. This action can take a while depending on the number of products.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'left', 'font-weight': 'normal'}),
+                html.H5("Generate 20 conformers for 3D structures of PU fragments.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'left', 'font-weight': 'normal'}),
+                html.Div("This action can take a while depending on the number of products.", style={'color':'gray', 'margin-bottom': '-3px', 'margin-left':'5px', 'textAlign': 'left', 'font-weight': 'bold', 'font-size':'13px'}),
                 html.Button("GENERATE 3D STRUCTURES WITH CONFORMERS (.mol2)", id='generate-conformers', n_clicks=0,style={'margin':'5px'}),
                 html.Div([
                     dcc.Loading(id='loading-conformers',
@@ -261,6 +262,14 @@ def create_download_panel():
 
 def create_footer():
     return html.Div(id = 'left-panel-footer', children = [
+            html.Div(children = [html.Div(className='circle', style = {'background-color': '#FAAAAA',
+                                                                                                            'margin-right':'20px'}),
+                                                                    html.Div(className='circle', style = {'background-color': '#ABABAB',
+                                                                                                            'margin-right':'20px'}),
+                                                                    html.Div(className='circle', style = {'background-color': '#9f74f2'})],
+                                                style = {'display':'flex', 'justify-content': 'center', 'margin-top':'15px', 'margin-bottom':'15px'}),
+                                                
+            
             html.H3("See the related publication", style={'color': '5b5d74',
                                                 'font-size': '15px',
                                                 'font-weight': '600',
