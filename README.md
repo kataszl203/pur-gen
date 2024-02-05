@@ -12,39 +12,31 @@ Dash Python https://dash.plotly.com/
 ## Dependencies for Debian/Ubuntu
 ### Libraries needed to run the script
 ```
-$apt update
-$apt -y install --no-install-recommends\
-                build-essential\
-                ca-certificates\
-                cmake\
-                git\
-                zlib1g-dev\
-                libcairo2-dev\
-                libboost-dev\
-                libboost-program-options-dev\
-                libboost-iostreams-dev\
-                libboost-regex-dev\
-                rapidjson-dev\
-                python3-dev\
-                libbz2-dev\
-                libeigen3-dev\
-                libxml2-dev\
-                swig\
-                lzma\
-                python3-rdkit\
+# apt update && apt -y install --no-install-recommends\
+                python3\
                 python3-pip\
                 librdkit1\
-                rdkit-data\
-                wget
-$pip install matplotlib
-$pip install dash dash-html-components dash-core-components dash-daq
-```
-### Build patched openbabel
-```
-$chmod +x ./build_openbabel.sh
-$./build_openbabel.sh
+                rdkit-data
+
+$ pip install matplotlib dash dash-html-components dash-core-components dash-daq openbabel-wheel rdkit
+
 ```
 ### Running the web application locally
 ```
 $/usr/bin/python app.py
 ```
+
+### Running with docker
+
+go to the project directory and use following commands
+
+build (with image name `purge`):
+```
+docker build -t purge .
+```
+
+run (with forwarding app on local port 8080, ctrl-c to stop):
+```
+docker run --rm -it -p 8080:8080 purge
+```
+
