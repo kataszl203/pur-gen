@@ -13,7 +13,7 @@ x = ob.OBMinimizingEnergyConformerScore()
 conformer.SetScore(x)
 y = ob.OBStericConformerFilter()
 conformer.SetFilter(y)
-pff = ob.OBForceField_FindType("gaff")
+pff = ob.OBForceField.FindType("gaff")
 
 # Substrates properties
 iso = Chem.MolFromSmiles('N=C=O')

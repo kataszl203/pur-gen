@@ -2,7 +2,6 @@ import dash
 from dash import html, dcc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-import io
 import utils
 import io
 import base64
@@ -12,6 +11,7 @@ import callbacks
 
 # Create the Dash app
 app = dash.Dash(__name__)
+server = app.server
 
 external_stylesheets = ['assets/style.css']
 
