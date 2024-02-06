@@ -1,7 +1,13 @@
 /* Font
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('Montserrat/Montserrat-VariableFont_wght.ttf') format('ttf'),
+  /* Add other font formats if available */
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif; /* Use Roboto as the default font */
 }
 
 /* Buttons
