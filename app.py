@@ -23,7 +23,7 @@ hydroxyl_all = [item['smiles'] for item in hydroxyl_list]
 
 # Define the layout of the app
 app.layout = html.Div(
-    style={'display': 'flex', 'font-family': 'Calibri'},
+    style={'display': 'flex'},
     children=[html.Div(id = 'left-panel-content',
                        style = {'flex': '1', 
                                 'padding': '5px',
