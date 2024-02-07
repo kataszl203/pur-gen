@@ -9,6 +9,21 @@ Pybel https://openbabel.org/docs/dev/UseTheLibrary/Python_Pybel.html
 
 Dash Python https://dash.plotly.com/
 
+
+### Running with docker
+
+go to the project directory and use following commands
+
+build (with image name `purge`):
+```
+docker build -t purge .
+```
+
+run (with forwarding app on local port 8080, ctrl-c to stop):
+```
+docker run --rm -it -p 8080:8080 purge
+```
+
 ## Dependencies for Debian/Ubuntu
 ### Libraries needed to run the script
 ```
@@ -25,18 +40,3 @@ $ pip install matplotlib dash dash-html-components dash-core-components dash-daq
 ```
 $/usr/bin/python app.py
 ```
-
-### Running with docker
-
-go to the project directory and use following commands
-
-build (with image name `purge`):
-```
-docker build -t purge .
-```
-
-run (with forwarding app on local port 8080, ctrl-c to stop):
-```
-docker run --rm -it -p 8080:8080 purge
-```
-
