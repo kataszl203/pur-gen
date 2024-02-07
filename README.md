@@ -1,4 +1,4 @@
-# PURGE - polyurethane fragments generator
+# PUR-GEN - polyurethane fragments generator
 ![image](https://github.com/kataszl203/oligomer_webapp/assets/40094884/d0721108-889d-4258-a42d-891c39f91c00)
 
 Used packages:
@@ -14,9 +14,9 @@ Dash Python https://dash.plotly.com/
 
 go to the project directory and use following commands
 
-build (with image name `purge`):
+build (with image name `pur-gen`):
 ```
-docker build -t purge .
+docker build -t pur-gen .
 ```
 
 run (with forwarding app on local port 8080, ctrl-c to stop):
