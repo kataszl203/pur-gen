@@ -29,7 +29,7 @@ app.layout = html.Div(
                                 'padding': '5px',
                                 'background-color': '#F0F0F0'},
                        children = [html.Div(id = 'left-panel-header',
-                                            children = [html.A(html.Img(src='assets/purge.png', 
+                                            children = [html.A(html.Img(src='assets/pur-gen.png', 
                                                                  style={'max-width': '85%', 
                                                                         'height': 'auto'}), href='/'),
                                                         ]),
