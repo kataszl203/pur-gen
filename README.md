@@ -21,7 +21,7 @@ docker build -t pur-gen .
 
 run (with forwarding app on local port 8080, ctrl-c to stop):
 ```
-docker run --rm -it -p 8080:8080 purge
+docker run --rm -it -p 8080:8080 pur-gen
 ```
 
 ## Dependencies for Debian/Ubuntu
