@@ -4,7 +4,7 @@ RUN apt update && apt -y install --no-install-recommends\
                 python3-pip\
                 librdkit1
 
-RUN pip install --break-system-packages matplotlib dash dash-html-components dash-core-components dash-daq openbabel-wheel rdkit gunicorn
+RUN pip install --break-system-packages matplotlib dash dash-html-components dash-core-components dash-daq openbabel-wheel rdkit gunicorn pandas
 
 COPY . /pur-gen
 WORKDIR pur-gen

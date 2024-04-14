@@ -1,10 +1,11 @@
 from rdkit import Chem
-from rdkit.Chem import Draw, AllChem
+from rdkit.Chem import Draw, AllChem, Crippen, Descriptors
 from rdkit.Chem import rdChemReactions
 from openbabel import openbabel as ob
 from openbabel import pybel
 import io
 import base64
+import pandas as pd
 
 # General settings
 conformer = ob.OBConformerSearch()
@@ -14,13 +15,6 @@ conformer.SetScore(x)
 y = ob.OBStericConformerFilter()
 conformer.SetFilter(y)
 pff = ob.OBForceField.FindType("gaff")
-
-# Substrates properties
-iso = Chem.MolFromSmiles('N=C=O')
-diiso = Chem.MolFromSmiles('O=C=N.N=C=O')
-ol = Chem.MolFromSmiles('CO')
-ol_2 = Chem.MolFromSmiles('COCCO')
-diol = Chem.MolFromSmiles('OC.CO')
 
 # Reactions in SMARTS
 # Dimerization
@@ -32,6 +26,18 @@ bab = '[C:1][O;H1:2].([O:3]=[C:4]=[N:5].[N:6]=[C:7]=[O:8]).[C:9][O;H1:10]>>([C:1
 abab = ('[N:1]=[C:2]=[O:3].([O;H1:4][C:5].[C:6][O;H1:7]).([N:8]=[C:9]=[O:10].[N:11]=[C:12]=[O:13]).[O;H1:14][C:15]>>'
         '([N:1][C:2](=[O:3])[O:4][C:5].[C:6][O:7][C:9](=[O:10])[N:8].[N:11][C:12](=[O:13])[O:14][C:15])')
 
+def calculate_properties_df(df):
+    df['Molecular Weight'] = df['SMILES'].apply(lambda x: round(Descriptors.ExactMolWt(Chem.MolFromSmiles(x)),2) )
+    df['Heavy Atoms'] = df['SMILES'].apply(lambda x: Descriptors.HeavyAtomCount(Chem.MolFromSmiles(x)) )
+    df['Rotable Bonds'] = df['SMILES'].apply(lambda x: Descriptors.NumRotatableBonds(Chem.MolFromSmiles(x)) )
+    df['Ester bond'] = df['SMILES'].apply(lambda x: int(Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CC(=O)O'))))
+    df['Ether bond'] = df['SMILES'].apply(lambda x: int(Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CCOCC')) and not Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CC(=O)O'))))
+    df['Aromatic Atoms'] = df['SMILES'].apply(lambda x: len(Chem.MolFromSmiles(x).GetAromaticAtoms()) )
+    df['Aromatic Proportion'] = (df['Aromatic Atoms']/df['Heavy Atoms']).round(2)
+    df['clogP'] = df['SMILES'].apply(lambda x: round(Crippen.MolLogP(Chem.MolFromSmiles(x)),2))
+    df['TPSA'] = df['SMILES'].apply(lambda x: round(Descriptors.TPSA(Chem.MolFromSmiles(x)),2))
+    df['MR'] = df['SMILES'].apply(lambda x: round(Crippen.MolMR(Chem.MolFromSmiles(x)),2) )
+    return df
 
 def is_valid_smiles(smiles):
     try:
@@ -53,6 +59,19 @@ def smiles_to_image(input_smiles):
     pil_img = Draw.MolToImage(m)
     img_str = pil_to_base64(pil_img)
     return img_str
+
+def smiles_to_pil_image(input_smiles):
+    m = Chem.MolFromSmiles(input_smiles)
+    pil_img = Draw.MolToImage(m)
+    return pil_img
+
+# Substrates properties
+iso = Chem.MolFromSmiles('N=C=O')
+diiso = Chem.MolFromSmiles('O=C=N.N=C=O')
+ol = Chem.MolFromSmiles('CO')
+ol_2 = Chem.MolFromSmiles('COC.CO')
+diol = Chem.MolFromSmiles('OC.CO')
+diol_2 = Chem.MolFromSmiles('OC.COC.CO')
 
 def prepare_reaction(smiles):
   
@@ -82,26 +101,29 @@ def prepare_reaction(smiles):
             iso_mols.append(comp)
             n_iso += 1
 
-        elif comp.HasSubstructMatch(diol):
+        elif comp.HasSubstructMatch(ol):
+            #Check if ether bond present 
             if comp.HasSubstructMatch(ol_2):
+                #Check if ether bond and two OH present
+                if comp.HasSubstructMatch(diol_2):
+                    comp.SetProp('func_group', 'diol')
+                    poliol_mols.append(comp)
+                    n_diol += 1
+                else:
+                    comp.SetProp('func_group', 'ol')
+                    poliol_mols.append(comp)
+                    n_ol += 1
+            else:
                 comp.SetProp('func_group', 'ol')
                 poliol_mols.append(comp)
                 n_ol += 1
-            else:
-                comp.SetProp('func_group', 'diol')
-                poliol_mols.append(comp)
-                n_diol += 1
-
-        elif comp.HasSubstructMatch(ol):
-            comp.SetProp('func_group', 'ol')
+        elif comp.HasSubstructMatch(diol):
+            comp.SetProp('func_group', 'diol')
             poliol_mols.append(comp)
-            n_ol += 1
-
-        
+            n_diol += 1
         n += 1
 
     info = [n, n_iso, n_diiso, n_ol, n_diol]
-    
     return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols
 
 
@@ -109,7 +131,6 @@ def perform_dimerization(a_list, b_list):
     reagents_smiles = []
     products_smiles = []
     products_list = []
-
     for a in a_list:
         for b in b_list:
             reaction = ab
