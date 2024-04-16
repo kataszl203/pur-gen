@@ -5,7 +5,8 @@ from openbabel import openbabel as ob
 from openbabel import pybel
 import io
 import base64
-import pandas as pd
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
 # General settings
 conformer = ob.OBConformerSearch()
@@ -29,7 +30,7 @@ abab = ('[N:1]=[C:2]=[O:3].([O;H1:4][C:5].[C:6][O;H1:7]).([N:8]=[C:9]=[O:10].[N:
 def calculate_properties_df(df):
     df['Molecular Weight'] = df['SMILES'].apply(lambda x: round(Descriptors.ExactMolWt(Chem.MolFromSmiles(x)),2) )
     df['Heavy Atoms'] = df['SMILES'].apply(lambda x: Descriptors.HeavyAtomCount(Chem.MolFromSmiles(x)) )
-    df['Rotable Bonds'] = df['SMILES'].apply(lambda x: Descriptors.NumRotatableBonds(Chem.MolFromSmiles(x)) )
+    df['Rotatable Bonds'] = df['SMILES'].apply(lambda x: Descriptors.NumRotatableBonds(Chem.MolFromSmiles(x)) )
     df['Ester bond'] = df['SMILES'].apply(lambda x: int(Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CC(=O)O'))))
     df['Ether bond'] = df['SMILES'].apply(lambda x: int(Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CCOCC')) and not Chem.MolFromSmiles(x).HasSubstructMatch(Chem.MolFromSmiles('CC(=O)O'))))
     df['Aromatic Atoms'] = df['SMILES'].apply(lambda x: len(Chem.MolFromSmiles(x).GetAromaticAtoms()) )
@@ -38,6 +39,42 @@ def calculate_properties_df(df):
     df['TPSA'] = df['SMILES'].apply(lambda x: round(Descriptors.TPSA(Chem.MolFromSmiles(x)),2))
     df['MR'] = df['SMILES'].apply(lambda x: round(Crippen.MolMR(Chem.MolFromSmiles(x)),2) )
     return df
+
+def generate_properties_figure(compounds_properties_df):
+    properties=['Molecular Weight', 'Heavy Atoms', 'Rotatable Bonds', 'Ester bond', 'Ether bond',
+                'Aromatic Atoms', 'Aromatic Proportion', 'clogP', 'TPSA', 'MR']
+    units = ['g/mol', 'number of atoms', 'number of bonds',
+             'bond presence', 'bond presence', 'number of atoms',
+             '', '', '', '']
+    
+    fig = make_subplots(rows=2, cols=5, subplot_titles=properties,
+                        vertical_spacing=0.4)
+    row_i = 1
+    col_i = 1
+    for i in range(len(properties)):
+        if col_i == 6:
+            row_i += 1
+            col_i = 1
+        if properties[i] == 'Ester bond' or properties[i] == 'Ether bond':
+            values = sorted(compounds_properties_df[properties[i]].unique())
+            labels = ['No', 'Yes']
+            fig.add_trace(
+                go.Histogram(x=compounds_properties_df[properties[i]],
+                             xbins=dict(start=-0.25, end=1.25, size=0.5)),
+                row=row_i, col=col_i)
+            fig.update_xaxes(tickvals=values, ticktext=labels,
+                             row=row_i, col=col_i, title_text=units[i],
+                             title_standoff=5)
+            
+        else:
+            fig.add_trace(
+                go.Histogram(x=compounds_properties_df[properties[i]]),
+                row=row_i, col=col_i)
+            fig.update_xaxes(title_text=units[i], row=row_i, col=col_i,
+                            title_standoff=5)
+        col_i += 1
+    fig.update_layout(showlegend=False)
+    return fig
 
 def is_valid_smiles(smiles):
     try:

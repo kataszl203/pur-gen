@@ -1,7 +1,6 @@
 from dash import html
 import utils
 import base64
-import plotly.express as px
 
 def validate_input_file(contents, filename):
     uploaded_substrates = []

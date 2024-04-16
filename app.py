@@ -12,50 +12,51 @@ import flask
 import os
 import pandas as pd
 from datetime import datetime
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 import urllib.parse
 
+
+# server = app.server
 server = flask.Flask(__name__)
-app = dash.Dash(__name__, use_pages=True,server=server)
+app = dash.Dash(__name__, use_pages=True, server = server, external_stylesheets = ['assets/style.css'])
 app.secret_key = "1d96c89adac1d05d77ef40707758213f"
 server.config["SECRET_KEY"]="1d96c89adac1d05d77ef40707758213f"
 
 products = None
 
-
-
-# server = app.server
-
-external_stylesheets = ['assets/style.css']
-
 ## INSERTED PAGE
 dash.register_page(__name__, path='/results',
-                   layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
+    
+    layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
+                      
     children = [
-        html.Center(style = {'alignItems': 'center', 'height': 'auto', 'background-color': '#F0F0F0'},
-        children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),
-                    ]),
-        html.Div(children=[
+        html.Center(style = {'alignItems': 'center', 'background-color': '#F0F0F0'},
+        children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),]),
+        
+        html.Div(style={'display':'flex'}, children=[
         html.Div(style={'flex':'1'},children=[
-        html.H3('INPUT STRUCTURES AND PARAMETERS', className='highlighted-left-text'),
-        html.Div(id = 'summary-output')]),
-        html.Div(style={'flex':'1'},
-            children=[
-            html.H3('DOWNLOAD RESULTS', className='highlighted-left-text'),
-            html.Div(style={'display':'block', 'justify-content': 'center', 'margin-top':'50px', 'margin-bottom':'30px'},
-                         children=[
+            html.H3('INPUT STRUCTURES AND PARAMETERS', className='highlighted-left-text-margin'),
+            html.Div(id = 'summary-output')]),
+
+        html.Div(style={'flex':'1'},children=[
+            html.H3('DOWNLOAD RESULTS', className='highlighted-left-text-margin'),
+            html.Div(className = 'results-buttons', children=[
+            
+            # Download button - 2D structures (zipped .mol files)
              html.Div(style={'margin-bottom': '10px'}, children=[
                  html.Button('2D STRUCTURES (.mol)', id='generate-2d', n_clicks=0),
                  html.Div(id='download-2d')]),
+
+            # Download button - 3D structures (zipped .mol2 files)
              html.Div(style={'margin-bottom': '10px'}, children=[
                  html.Button('3D STRUCTURES (.mol2)', id='generate-3d', n_clicks=0),
                  html.Div(id='download-3d')]),
+
+            # Download button - 3D structures with conformers (zipped .mol2 files)
              html.Div(style={'margin-bottom': '10px'}, children=[
                  html.Button('3D CONFORMERS (.mol2)', id='generate-conformers', n_clicks=0),
                  html.Div(id='download-conformers')]),
             
-
+            # Download button - properties table (.csv file)
              html.Div(style={'margin-bottom': '10px'}, children=[
                  html.A(html.Button('PROPERTIES (.csv)', id='generate-csv', n_clicks=0), 
                         id='download-csv', href='/download-csv', download='products.csv')
@@ -64,24 +65,21 @@ dash.register_page(__name__, path='/results',
                 # html.A(html.Button('PROPERTIES (.csv)', id='generate-csv', n_clicks=0), 
                 #         id='download-link', href=f'data:text/csv;charset=utf-8,{products}', download='products.csv'),
                 #  html.A('csv_link',id='download-link', href='/download-csv',download='products.csv'),
-                ])
-         ]),
-            ]
-        ),
-        dcc.Store(id='products'),
-        
-        ],style={'display':'flex'}
+                    ])
+                ]),
+            ]),
 
-        ),
+        dcc.Store(id='products')]),
+
         html.H1('GENERATED PUR FRAGMENTS',className='highlighted-center-text'),
         dcc.Tabs(id="tabs", value='tab-structures', children=[
-        dcc.Tab(label='PUR structres', value='tab-structures'),
-        dcc.Tab(label='Calculated properties', value='tab-table'),
-        dcc.Tab(label='Properties histograms', value='tab-histograms'),
-        ]),
+            dcc.Tab(label='PUR structres', value='tab-structures'),
+            dcc.Tab(label='Calculated properties', value='tab-table'),
+            dcc.Tab(label='Properties histograms', value='tab-histograms'),
+            ]),
         html.Div(id = 'tabs-output')      
-                ])
-                   )
+        ])
+    )
 
 # Access stored substrates, size and capping and perform reaction
 @app.callback(
@@ -101,30 +99,37 @@ def process_substrates(stored_substrates, stored_size, stored_capping, tab):
 
     products_df = pd.DataFrame({'Compound':pd.Index(range(1, len(capped_products) + 1)),'SMILES':capped_products})
     compounds_properties_df = utils.calculate_properties_df(products_df)
-    table = dash_table.DataTable(compounds_properties_df.to_dict('records'))
-
-    properties=['Molecular Weight', 'Heavy Atoms', 'Rotable Bonds', 'Ester bond', 'Ether bond',
-                'Aromatic Atoms', 'Aromatic Proportion', 'clogP', 'TPSA', 'MR']
-    fig = make_subplots(rows=2, cols=5, subplot_titles=properties)
-    row_i = 1
-    col_i = 1
-    for i in range(len(properties)):
-        if col_i == 6:
-            row_i += 1
-            col_i = 1
-        fig.add_trace(
-            go.Histogram(x=compounds_properties_df[properties[i]]),
-            row=row_i, col=col_i
-        )
-        col_i += 1
-    fig.update_layout(showlegend=False)
+    table = dash_table.DataTable(compounds_properties_df.to_dict('records'),
+                                 style_data={'textAlign': 'left'},
+                                 style_header={'textAlign': 'left'})
+    fig = utils.generate_properties_figure(compounds_properties_df)
 
     if tab == 'tab-structures':
         tab_output = structures_imgs
     elif tab == 'tab-table':
-        tab_output = table
+        tab_output = html.Div(children=[
+            html.Center(html.H4('''Calculated PUR fragments properties:
+                    molecular weight, number of heavy atoms, 
+                    number of rotatable bonds, presence of ester bond, 
+                    presence of ether bond, number of aromatic atoms, 
+                    aromatic proportion (number of aromatic atoms divided
+                     by number of heavy atoms), Crippen-Wildman partition 
+                    coefficient (clogP), topological polar surface area (TPSA), 
+                    Crippen-Wildman molar refractivity (MR).''', 
+                    className = 'results-properties-description')),
+            table])
     elif tab == 'tab-histograms':
-        tab_output = dcc.Graph(figure=fig)
+        tab_output = html.Div(children=[
+            html.Center(html.H4('''Calculated PUR fragments properties:
+                    molecular weight, number of heavy atoms, 
+                    number of rotatable bonds, presence of ester bond, 
+                    presence of ether bond, number of aromatic atoms, 
+                    aromatic proportion (number of aromatic atoms divided
+                     by number of heavy atoms), Crippen-Wildman partition 
+                    coefficient (clogP), topological polar surface area (TPSA), 
+                    Crippen-Wildman molar refractivity (MR).''', 
+                    className = 'results-properties-description')),
+            dcc.Graph(figure=fig)])
 
     products = compounds_properties_df
     return summary, tab_output, compounds_properties_df.to_dict()

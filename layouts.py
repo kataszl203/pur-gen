@@ -6,7 +6,7 @@ def create_checkbox_list(options, all_options, table_title, table_id, checkall_i
     return html.Div(
         style={},
         id = table_id,
-        children = [html.H5(table_title, className='highlighted-left-text'),
+        children = [html.H3(table_title, className='highlighted-left-text'),
                     dcc.Checklist(id = checkall_id,
                                   options = [{'label': html.H4('select all',className='substrate-checklist-text'), 
                                               'value':all_options}], 

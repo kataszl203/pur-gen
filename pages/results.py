@@ -16,8 +16,6 @@
 
 # dash.register_page(__name__, path='/results')
 
-# external_stylesheets = ['assets/style.css']
-
 # layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
 #     children = [
 #         html.Center(style = {'alignItems': 'center', 'height': 'auto', 'background-color': '#F0F0F0'},

@@ -1,14 +1,11 @@
 import dash
-from dash import html, dcc, callback, callback_context, no_update
+from dash import html, dcc, callback, no_update
 from dash.dependencies import Input, Output, State
 import layouts
 import callbacks
-from dash.exceptions import PreventUpdate
 
 
 dash.register_page(__name__, path='/run')
-
-external_stylesheets = ['assets/style.css']
 
 # Read the compounds
 isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/isocyanates.txt", "r").read().splitlines()]
