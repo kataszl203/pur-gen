@@ -24,7 +24,7 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
     html.H2("1. SELECT OR UPLOAD SUBSTRATES",className='highlighted-center-smaller-text'),
     
     html.Div([html.Img(src='assets/substrates.png',
-                       style={'max-width': '50%'})],
+                       style={'max-width': '60%'})],
                        className='how-to-use-image'),
 
     html.H3('''PUR fragments can be generated from diverse groups of both main 

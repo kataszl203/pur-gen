@@ -47,6 +47,10 @@ def generate_properties_figure(compounds_properties_df):
              'bond presence', 'bond presence', 'number of atoms',
              '', '', '', '']
     
+    compounds_properties_df['Ester bond'] = compounds_properties_df['Ester bond'].replace({0: 'No', 1: 'Yes'})
+    compounds_properties_df['Ether bond'] = compounds_properties_df['Ether bond'].replace({0: 'No', 1: 'Yes'})
+
+    
     fig = make_subplots(rows=2, cols=5, subplot_titles=properties,
                         vertical_spacing=0.4)
     row_i = 1
@@ -55,23 +59,23 @@ def generate_properties_figure(compounds_properties_df):
         if col_i == 6:
             row_i += 1
             col_i = 1
-        if properties[i] == 'Ester bond' or properties[i] == 'Ether bond':
-            values = sorted(compounds_properties_df[properties[i]].unique())
-            labels = ['No', 'Yes']
-            fig.add_trace(
-                go.Histogram(x=compounds_properties_df[properties[i]],
-                             xbins=dict(start=-0.25, end=1.25, size=0.5)),
-                row=row_i, col=col_i)
-            fig.update_xaxes(tickvals=values, ticktext=labels,
-                             row=row_i, col=col_i, title_text=units[i],
-                             title_standoff=5)
+        # if properties[i] == 'Ether bond':
+        #     values = sorted(compounds_properties_df[properties[i]].unique())
+        #     labels = ['No', 'Yes']
+        #     fig.add_trace(
+        #         go.Histogram(x=compounds_properties_df[properties[i]],
+        #                      xbins=dict(start=-0.25, end=1.25, size=0.5)),
+        #         row=row_i, col=col_i)
+        #     fig.update_xaxes(tickvals=values, ticktext=labels,
+        #                      row=row_i, col=col_i, title_text=units[i],
+        #                      title_standoff=5)
             
-        else:
-            fig.add_trace(
-                go.Histogram(x=compounds_properties_df[properties[i]]),
-                row=row_i, col=col_i)
-            fig.update_xaxes(title_text=units[i], row=row_i, col=col_i,
-                            title_standoff=5)
+        # else:
+        fig.add_trace(
+            go.Histogram(x=compounds_properties_df[properties[i]]),
+            row=row_i, col=col_i)
+        fig.update_xaxes(title_text=units[i], row=row_i, col=col_i,
+                        title_standoff=5)
         col_i += 1
     fig.update_layout(showlegend=False)
     return fig
@@ -177,7 +181,7 @@ def perform_dimerization(a_list, b_list):
             products_list.append(products[0][0])
             reagents_smiles.append([Chem.MolToSmiles(reacts[0]), Chem.MolToSmiles(reacts[1])])
             products_smiles.append(Chem.MolToSmiles(products[0][0]))
-    return reagents_smiles, products_smiles
+    return products_smiles
 
 
 def perform_trimerization(a_list, b_list):
@@ -223,7 +227,7 @@ def perform_trimerization(a_list, b_list):
                 products_smiles.append(Chem.MolToSmiles(products2[0][0]))
                 
 
-    return reagents_smiles, products_smiles
+    return products_smiles
 
 
 def perform_tetramerization(a_list, b_list):
@@ -245,7 +249,7 @@ def perform_tetramerization(a_list, b_list):
                          Chem.MolToSmiles(reacts[3])], )
                     products_smiles.append(Chem.MolToSmiles(products[0][0]))
 
-    return reagents_smiles, products_smiles
+    return products_smiles
 
 def modify_molecule(smiles, condition):
     replacement = ""

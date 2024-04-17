@@ -446,3 +446,10 @@ input[type="button"].button-primary:focus {
   margin-top:50px;
   margin-bottom:30px                    
 }
+
+.products-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 20px
+}

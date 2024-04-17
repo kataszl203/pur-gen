@@ -124,10 +124,10 @@ def validate_input(contents, filename,
     for substrate in uploaded_substrates:
         if substrate not in smiles:
             smiles.append(substrate)
-    if not smiles:
-        return no_update
 
-    if smiles:
+    if not smiles:
+        return valid_file, '', ''
+    else:
         return valid_file, smiles, '/results'
 
 
