@@ -25,8 +25,10 @@ layout = html.Div(
                        Szleper K., Raczyńska A., Góra A., 2024''', 
                        href='http://www.doi.pl/',className='homepage-publication-link'),
                 
-                html.Img(src='assets/PUR.png',
-                         style={'width': '100%','opacity':'0.3','margin-top': '50px'}),
+              #   html.Img(src='assets/PUR.png',
+              #            style={'width': '100%','opacity':'0.3','margin-top': '50px'}),
+                html.Img(src='assets/abstract.png',
+                         style={'width': '40%','margin-top': '10px', 'margin-bottom':'10px'}),
                          
                 html.H3("Contact Information", className = 'contact-info'),
                 html.H3("Katarzyna Szleper", className = 'email-info'),

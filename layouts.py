@@ -23,16 +23,17 @@ def create_checkbox_list(options, all_options, table_title, table_id, checkall_i
                                   value=[],)
                     ])
 
-def create_switch_with_label(label_text, switch_id):
+def create_switch_with_label(label_text, switch_id,image_source):
     return html.Div([
         daq.BooleanSwitch(
             id=switch_id,
             on=False
         ),
-        html.H4(
+        html.Div([html.H4(
             label_text,
             className = 'switch-label'
         ),
+        html.Img(src=image_source, style={'height': '50px','width': 'auto', 'margin-left':'15px'})])
     ], style={'display': 'flex', 'align-items': 'left'})
     
 def create_upload_component():
@@ -55,12 +56,13 @@ def create_upload_component():
 def create_select_size_component():
     return html.Div([
         html.H3("SELECT SIZE", className='run-select-text'),
+        html.H4(children=[],className='run-select-info-text', id='size-info'),
         dcc.RadioItems(
             id='select-size',
             options=[
-                {'label': '2 units', 'value': '2'},
-                {'label': '3 units', 'value': '3'},
-                {'label': '4 units', 'value': '4'},
+                {'label': html.Label(['2 units', html.Img(src='assets/size-2.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '2'},
+                {'label': html.Label(['3 units', html.Img(src='assets/size-3.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '3'},
+                {'label': html.Label(['4 units', html.Img(src='assets/size-4.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '4'},
             ],
             value='2',  # Default selected value
             labelStyle={

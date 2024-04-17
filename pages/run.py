@@ -25,8 +25,8 @@ layout = html.Div(style={'display': 'flex'},
             children = [html.H3("SELECT SUBSTRATES",className='run-select-text'),
                         html.H4("Choose at least one isocyanate and one hydroxyl compound.",
                                 className='run-select-info-text'),
-                        layouts.create_switch_with_label('show isocyanates','switch-isocyanate'),
-                        layouts.create_switch_with_label('show hydroxyl compounds','switch-hydroxyl'),
+                        layouts.create_switch_with_label('show isocyanates','switch-isocyanate','assets/isocyanates.png'),
+                        layouts.create_switch_with_label('show hydroxyl compounds','switch-hydroxyl','assets/polyols.png'),
                         layouts.create_upload_component(),
                         dcc.Store(id='store-substrates'),
                         layouts.create_select_size_component(),
@@ -88,6 +88,19 @@ def select_all_none(select_all_isocyanate_value, select_all_hydroxyl_value,
     all_isocyanate = [option["value"] for option in options_isocyanate if select_all_isocyanate_value]
     all_hydroxyl = [option["value"] for option in options_hydroxyl if select_all_hydroxyl_value]
     return all_isocyanate, all_hydroxyl
+
+
+#Info regarding substrates depending on size
+@callback(
+        Output('size-info', 'children'),
+        Input('select-size', 'value')
+)
+
+def info_about_size(size):
+    if size == '3':
+        return ['Choose at least one diisocyanate or at least one diol.']
+    elif size == '4':
+        return ['Choose at least one diisocyanate and at least one diol.']
 
 # Define callback to validate uploaded input 
 # and store uploaded substrates together with selected substrates
