@@ -94,7 +94,8 @@ def process_substrates(stored_substrates, stored_size, stored_capping, tab):
                     coefficient (clogP), topological polar surface area (TPSA), 
                     Crippen-Wildman molar refractivity (MR).''', 
                     className = 'results-properties-description')),
-            table])
+            table,
+            html.Br()])
     elif tab == 'tab-histograms':
         tab_output = html.Div(children=[
             html.Center(html.H4('''Calculated PUR fragments properties:

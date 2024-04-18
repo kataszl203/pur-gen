@@ -7,7 +7,7 @@ dash.register_page(__name__, path='/how-to-use')
 layout = html.Center(style = {'display': 'block','alignItems': 'center',},
     children = [
         html.Center(className='how-to-use-page-header',children = [
-            html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),
+            html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/',id='top'),
                     html.Div(className='header-buttons',children=[
                         dcc.Link(html.Button('HOME PAGE'), href='/'),
                         dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
@@ -89,7 +89,10 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
             className='center-text'),
 
     html.Img(src='assets/results.png', className='how-to-use-screenshot-margin'),
-    
+
+    html.Div(dcc.Link(html.Button("back to top of the page"), href='#top')),
+
+    html.Br(),
     html.H3("Contact Information", className = 'contact-info'),
     html.H3("Katarzyna Szleper", className = 'email-info'),
     html.H3("email: k.szleper@tunnelinggroup.pl", className = 'email-info'),
