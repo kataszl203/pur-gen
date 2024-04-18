@@ -1,189 +1,208 @@
-# import dash
-# from dash import html, dcc, callback, dash_table
-# from dash.dependencies import Input, Output, State
-# import layouts
-# import callbacks
-# import utils
-# import pandas as pd
-# from plotly.subplots import make_subplots
-# import plotly.graph_objects as go
-# import io
-# from dash.exceptions import PreventUpdate
-# import zipfile
-# import tempfile
-# import base64
-# import os
+import dash
+from dash import html, dcc, callback, dash_table
+from dash.dependencies import Input, Output, State
+import callbacks
+import utils
+import pandas as pd
+import io
+import zipfile
+import tempfile
 
-# dash.register_page(__name__, path='/results')
 
-# layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
-#     children = [
-#         html.Center(style = {'alignItems': 'center', 'height': 'auto', 'background-color': '#F0F0F0'},
-#         children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),
-#                     ]),
-#         html.Div(children=[
-#         html.Div(style={'flex':'1'},children=[
-#         html.H3('INPUT STRUCTURES AND PARAMETERS', className='highlighted-left-text'),
-#         html.Div(id = 'summary-output')]),
-#         html.Div(style={'flex':'1'},
-#             children=[
-#             html.H3('DOWNLOAD RESULTS', className='highlighted-left-text'),
-#             html.Div(style={'display':'block', 'justify-content': 'center', 'margin-top':'50px', 'margin-bottom':'30px'},
-#                          children=[
-#              html.Div(style={'margin-bottom': '10px'}, children=[
-#                  html.Button('2D STRUCTURES (.mol)', id='generate-2d', n_clicks=0),
-#                  html.Div(id='download-2d')]),
-#              html.Div(style={'margin-bottom': '10px'}, children=[
-#                  html.Button('3D STRUCTURES (.mol2)', id='generate-3d', n_clicks=0),
-#                  html.Div(id='download-3d')]),
-#              html.Div(style={'margin-bottom': '10px'}, children=[
-#                  html.Button('3D CONFORMERS (.mol2)', id='generate-conformers', n_clicks=0),
-#                  html.Div(id='download-conformers')]),
-            
+dash.register_page(__name__, path='/results')
 
-#              html.Div(style={'margin-bottom': '10px'}, children=[
-#                  html.A(html.Button('PROPERTIES (.csv)', id='generate-csv', n_clicks=0), id='download-link', href='', download='products.csv'),
-#                  html.Div(id="download-csv")])
-#             #RAMEZ
-#             <button type="submit" id="downloadDataBtn" formaction="{{ url_for('download_excel') }}">Download Data</button>
-#          ]),
-#             ]
-#         ),
-#         dcc.Store(id='products'),
+layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
+                      
+    children = [
+        html.Center(style = {'alignItems': 'center', 'background-color': '#F0F0F0'},
+        children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),]),
         
-#         ],style={'display':'flex'}
+        html.Div(style={'display':'flex'}, children=[
+        html.Div(style={'flex':'1'},children=[
+            html.H3('INPUT STRUCTURES AND PARAMETERS', className='highlighted-left-text-margin'),
+            html.Div(id = 'summary-output')]),
 
-#         ),
-#         html.H1('GENERATED PUR FRAGMENTS',className='highlighted-center-text'),
-#         dcc.Tabs(id="tabs", value='tab-structures', children=[
-#         dcc.Tab(label='PUR structres', value='tab-structures'),
-#         dcc.Tab(label='Calculated properties', value='tab-table'),
-#         dcc.Tab(label='Properties histograms', value='tab-histograms'),
-#         ]),
-#         html.Div(id = 'tabs-output')      
-#                 ])
+        html.Div(style={'flex':'1'},children=[
+            html.H3('DOWNLOAD RESULTS', className='highlighted-left-text-margin'),
+            html.Div(className = 'results-buttons', children=[
+            
+            # Download button - 2D structures (zipped .mol files)
+             html.Div(style={'margin-bottom': '10px'}, children=[
+                 html.Button('2D STRUCTURES (.mol)', id='generate-2d', n_clicks=0),
+                 dcc.Download(id="download-2d")]),
 
+            # Download button - 3D structures (zipped .mol2 files)
+             html.Div(style={'margin-bottom': '10px'}, children=[
+                 html.Button('3D STRUCTURES (.mol2)', id='generate-3d', n_clicks=0),
+                 dcc.Download(id='download-3d')]),
 
+            # Download button - 3D structures with conformers (zipped .mol2 files)
+             html.Div(style={'margin-bottom': '10px'}, children=[
+                 html.Button('3D CONFORMERS (.mol2)', id='generate-conformers', n_clicks=0),
+                 dcc.Download(id='download-conformers')]),
+            
+            # Download button - properties table (.csv file)
+             html.Div(style={'margin-bottom': '10px'}, children=[
+                 html.Button('PROPERTIES (.csv)', id='generate-csv', n_clicks=0),
+                 dcc.Download(id="download-csv")])
+                ]),
+            ]),
 
-# # Access stored substrates, size and capping and perform reaction
-# @callback(
-#         Output('summary-output', 'children'),
-#         Output('tabs-output', 'children'),
-#         Output('products', 'data'),
-#         Input('stored-substrates', 'data'),
-#         Input('stored-size', 'data'),
-#         Input('stored-capping', 'data'),
-#         Input('tabs', 'value')
-#         )
-# def process_substrates(stored_substrates, stored_size, stored_capping, tab): 
-#     summary, structures_imgs, capped_products = callbacks.show_reactions(stored_substrates, stored_size, stored_capping)
+        dcc.Store(id='products')]),
 
-#     products_df = pd.DataFrame({'Compound':pd.Index(range(1, len(capped_products) + 1)),'SMILES':capped_products})
-#     compounds_properties_df = utils.calculate_properties_df(products_df)
-#     table = dash_table.DataTable(compounds_properties_df.to_dict('records'))
-
-#     properties=['Molecular Weight', 'Heavy Atoms', 'Rotable Bonds', 'Ester bond', 'Ether bond',
-#                 'Aromatic Atoms', 'Aromatic Proportion', 'clogP', 'TPSA', 'MR']
-#     fig = make_subplots(rows=2, cols=5, subplot_titles=properties)
-#     row_i = 1
-#     col_i = 1
-#     for i in range(len(properties)):
-#         if col_i == 6:
-#             row_i += 1
-#             col_i = 1
-#         fig.add_trace(
-#             go.Histogram(x=compounds_properties_df[properties[i]]),
-#             row=row_i, col=col_i
-#         )
-#         col_i += 1
-#     fig.update_layout(showlegend=False)
-
-#     if tab == 'tab-structures':
-#         tab_output = structures_imgs
-#     elif tab == 'tab-table':
-#         tab_output = table
-#     elif tab == 'tab-histograms':
-#         tab_output = dcc.Graph(figure=fig)
-#     return summary, tab_output, compounds_properties_df.to_dict()
-
-# @callback(
-#         Output('download-link','href'),
-#         Input('products', 'data'),
-#         Input('generate-csv','n_clicks'),
-#         )
-
-# def generate_download_link(products, n_clicks_csv):
-#     if products:
-#         if n_clicks_csv:
-#             products_df = pd.DataFrame(products)
-#             csv_string = products_df.to_csv(index=False, encoding='utf-8')
-#             flask.session["csv_data"] = csv_string  # Store the CSV data in Flask session
-#             return '/download-csv'
+        html.H1('GENERATED PUR FRAGMENTS',className='highlighted-center-text'),
+        dcc.Tabs(id="tabs", value='tab-structures', children=[
+            dcc.Tab(label='PUR structres', value='tab-structures'),
+            dcc.Tab(label='Calculated properties', value='tab-table'),
+            dcc.Tab(label='Properties histograms', value='tab-histograms'),
+            ]),
+        html.Div(id = 'tabs-output')      
+        ])
 
 
-# # Generate data to download
-# # @callback(
-# #         Output('download-2d','children'),
-# #         Output('download-3d','children'),
-# #         Output('download-conformers','children'),
-# #         Output('download-csv','data'),
+# Access stored substrates, size and capping and perform reaction
+@callback(
+        Output('summary-output', 'children'),
+        Output('tabs-output', 'children'),
+        Output('products', 'data'),
+        Input('stored-substrates', 'data'),
+        Input('stored-size', 'data'),
+        Input('stored-capping', 'data'),
+        Input('tabs', 'value')
+        )
+def process_substrates(stored_substrates, stored_size, stored_capping, tab): 
 
-# #         Input('products', 'data'),
-# #         Input('generate-2d','n_clicks'),
-# #         Input('generate-3d','n_clicks'),
-# #         Input('generate-conformers','n_clicks'),
-# #         Input('generate-csv','n_clicks'),
+    summary, structures_imgs, capped_products = callbacks.show_reactions(stored_substrates, stored_size, stored_capping)
 
-# #         prevent_initial_call=True,
-# #         )
+    products_df = pd.DataFrame({'Compound':pd.Index(range(1, len(capped_products) + 1)),'SMILES':capped_products})
+    compounds_properties_df = utils.calculate_properties_df(products_df)
+    table = dash_table.DataTable(compounds_properties_df.to_dict('records'),
+                                 style_data={'textAlign': 'left'},
+                                 style_header={'textAlign': 'left'})
+    fig = utils.generate_properties_figure(compounds_properties_df)
 
-# # def generate_download(products, n_clicks_2d, n_clicks_3d, 
-# #                       n_clicks_conformers, n_clicks_csv):
-    
-# #     download_2d = []
-# #     download_3d = []
-# #     download_conformers = []
-# #     download_csv = []
+    if tab == 'tab-structures':
+        tab_output = structures_imgs
+    elif tab == 'tab-table':
+        tab_output = html.Div(children=[
+            html.Center(html.H4('''Calculated PUR fragments properties:
+                    molecular weight, number of heavy atoms, 
+                    number of rotatable bonds, presence of ester bond, 
+                    presence of ether bond, number of aromatic atoms, 
+                    aromatic proportion (number of aromatic atoms divided
+                     by number of heavy atoms), Crippen-Wildman partition 
+                    coefficient (clogP), topological polar surface area (TPSA), 
+                    Crippen-Wildman molar refractivity (MR).''', 
+                    className = 'results-properties-description')),
+            table])
+    elif tab == 'tab-histograms':
+        tab_output = html.Div(children=[
+            html.Center(html.H4('''Calculated PUR fragments properties:
+                    molecular weight, number of heavy atoms, 
+                    number of rotatable bonds, presence of ester bond, 
+                    presence of ether bond, number of aromatic atoms, 
+                    aromatic proportion (number of aromatic atoms divided
+                     by number of heavy atoms), Crippen-Wildman partition 
+                    coefficient (clogP), topological polar surface area (TPSA), 
+                    Crippen-Wildman molar refractivity (MR).''', 
+                    className = 'results-properties-description')),
+            dcc.Graph(figure=fig)])
+    return summary, tab_output, compounds_properties_df.to_dict()
 
-# #     products_df = pd.DataFrame(products)
-# #     products_list = products_df['SMILES'].values
+#Download csv
+@callback(
+    Output('download-csv', 'data'),
+    Input('generate-csv', 'n_clicks'),
+    State('products', 'data'),
+    prevent_initial_call=True
+)
+def download_csv(n_clicks, data):
+    if n_clicks:
+        df=pd.DataFrame(data)
+    return dcc.send_data_frame(df.to_csv, "properties.csv")
 
-# #     if n_clicks_2d:
-# #         if products:
-# #             with tempfile.TemporaryDirectory() as temp_dir:
-# #                 zip_path = os.path.join(temp_dir, "PUR_2D.zip")
-# #                 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-# #                     for idx, smiles in enumerate(products_list):
-# #                         mol_block = utils.generate_mol(smiles)
-# #                         mol_filename = f"PUR_{idx + 1}.mol"
-# #                         zipf.writestr(mol_filename, mol_block)
-# #             download_2d = html.Div([
-# #     html.A("Download PUR_2D.zip", href="/download", download="PUR_2D.zip"),
-# # ])
+#Download 2d
+@callback(
+    Output('download-2d', 'data'),
+    Input('generate-2d', 'n_clicks'),
+    State('products', 'data'),
+    prevent_initial_call=True
+)
+def download_mol(n_clicks, data):
+    if n_clicks:
+        df = pd.DataFrame(data)
+        smiles_list = df['SMILES'].values
+        zip_buffer = io.BytesIO()
+        # Create a zip file in the in-memory buffer
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for idx, smiles in enumerate(smiles_list):
+                mol_block = utils.generate_mol(smiles)
+                mol_filename = f"PUR_{idx + 1}.mol"
+                zipf.writestr(mol_filename, mol_block)
+        zip_buffer.seek(0) 
+        
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+            tmp_file.write(zip_buffer.getvalue())
+            tmp_file_name = tmp_file.name
+            return dcc.send_file(tmp_file_name, filename="PUR_2D.zip")
+        
+#Download 3d
+@callback(
+    Output('download-3d', 'data'),
+    Input('generate-3d', 'n_clicks'),
+    State('products', 'data'),
+    prevent_initial_call=True
+)
+def download_mol2(n_clicks, data):
+    if n_clicks:
+        df = pd.DataFrame(data)
+        smiles_list = df['SMILES'].values
+        zip_buffer = io.BytesIO()
+        # Create a zip file in the in-memory buffer
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for idx, smiles in enumerate(smiles_list):
+                mol_block = utils.generate_mol2(smiles, idx)
+                mol_filename = f"PUR_{idx + 1}.mol2"
+                zipf.writestr(mol_filename, mol_block)
+        # Rewind the buffer
+        zip_buffer.seek(0)      
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+            tmp_file.write(zip_buffer.getvalue())
+            tmp_file_name = tmp_file.name
+            return dcc.send_file(tmp_file_name, filename="PUR_3D.zip")
+        
+#Download conformers
+@callback(
+    Output('download-conformers', 'data'),
+    Input('generate-conformers', 'n_clicks'),
+    State('products', 'data'),
+    prevent_initial_call=True
+)
+def download_conformers(n_clicks, data):
+    if n_clicks:
+        df = pd.DataFrame(data)
+        smiles_list = df['SMILES'].values
+        zip_buffer = io.BytesIO()
+        # Create an in-memory buffer to store the zip file content
+        zip_buffer = io.BytesIO()
 
-# #             # # Create an in-memory buffer to store the zip file content
-# #             # zip_buffer = io.BytesIO()
+        # Create a zip file in the in-memory buffer
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for idx, smiles in enumerate(smiles_list):
+                conformers_content = utils.generate_conformers(smiles, idx)
+                for conf_num, conformer in enumerate(conformers_content):
+                    mol_filename = f"PUR_{idx + 1}_{conf_num}.mol2"
+                    zipf.writestr(mol_filename, conformer)
 
-# #             # # Create a zip file in the in-memory buffer
-# #             # with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
-# #             #     for idx, smiles in enumerate(products_list):
-# #             #         mol_block = utils.generate_mol(smiles)
-# #             #         mol_filename = f"PUR_{idx + 1}.mol"
-# #             #         zipf.writestr(mol_filename, mol_block)
-
-# #             # # Rewind the buffer
-# #             # zip_buffer.seek(0)
-
-# #             # # Encode the zip file content to base64
-# #             # zip_content_base64 = base64.b64encode(zip_buffer.read()).decode('utf-8')
-
-# #             # # Create the download link
-# #             # href = f"data:application/zip;base64,{zip_content_base64}"
-# #             # download_2d = html.A("Download PUR_2D.zip", href=href, download="PUR_2D.zip", target="_blank")
-    
-# #     if n_clicks_csv:
-# #         download_csv = dcc.send_data_frame(products_df.to_csv, "PUR_properties.csv")
+        # Rewind the buffer
+        zip_buffer.seek(0)   
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+            tmp_file.write(zip_buffer.getvalue())
+            tmp_file_name = tmp_file.name
+            return dcc.send_file(tmp_file_name, filename="PUR_3D_conformers.zip")
 
 
-# #     return download_2d, download_3d, download_conformers, download_csv
 

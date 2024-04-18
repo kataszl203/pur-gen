@@ -59,18 +59,6 @@ def generate_properties_figure(compounds_properties_df):
         if col_i == 6:
             row_i += 1
             col_i = 1
-        # if properties[i] == 'Ether bond':
-        #     values = sorted(compounds_properties_df[properties[i]].unique())
-        #     labels = ['No', 'Yes']
-        #     fig.add_trace(
-        #         go.Histogram(x=compounds_properties_df[properties[i]],
-        #                      xbins=dict(start=-0.25, end=1.25, size=0.5)),
-        #         row=row_i, col=col_i)
-        #     fig.update_xaxes(tickvals=values, ticktext=labels,
-        #                      row=row_i, col=col_i, title_text=units[i],
-        #                      title_standoff=5)
-            
-        # else:
         fig.add_trace(
             go.Histogram(x=compounds_properties_df[properties[i]]),
             row=row_i, col=col_i)
