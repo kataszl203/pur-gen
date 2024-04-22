@@ -1,6 +1,4 @@
 # PUR-GEN - polyurethane fragments generator
-![image](https://github.com/kataszl203/pur-gen/assets/40094884/8c9e35cc-8bdd-4f54-9379-0c77a7173d3b)
-
 Used packages:
 
 RDKit https://www.rdkit.org/docs/index.html
