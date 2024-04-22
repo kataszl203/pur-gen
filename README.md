@@ -1,12 +1,4 @@
 # PUR-GEN - polyurethane fragments generator
-Used packages:
-
-RDKit https://www.rdkit.org/docs/index.html
-
-Pybel https://openbabel.org/docs/dev/UseTheLibrary/Python_Pybel.html
-
-Dash Python https://dash.plotly.com/
-
 
 ### Running with docker
 
@@ -38,3 +30,12 @@ $ pip install matplotlib dash dash-html-components dash-core-components dash-daq
 ```
 $/usr/bin/python app.py
 ```
+
+
+Used packages:
+
+RDKit https://www.rdkit.org/docs/index.html
+
+Pybel https://openbabel.org/docs/dev/UseTheLibrary/Python_Pybel.html
+
+Dash Python https://dash.plotly.com/
