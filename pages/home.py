@@ -1,7 +1,11 @@
 import dash
 from dash import html, dcc
 
-dash.register_page(__name__, path='/')
+dash.register_page(__name__, 
+                   path='/',
+                   title='PUR-GEN',
+                   name='PUR-GEN',
+                   image='assets/logo.png')
 
 # Define layout for the home page
 layout = html.Div(
@@ -15,21 +19,24 @@ layout = html.Div(
                 html.H3('''PUR-GEN is a chemoinformatics online tool, 
                         which generates single structures or libraries 
                         of polyurethane (PUR) fragments.
-                        Generated structures can be further used in 
-                        computational analyses such as molecular docking, see: 
                         ''',
                 className = 'homepage-text-main'),
 
-                html.A('''PUR-GEN: a tool for polyurethane fragments generation 
-                       and its applicability for computational biodegradation studies, 
-                       Szleper K., Raczyńska A., Góra A., 2024''', 
-                       href='http://www.doi.pl/',className='homepage-publication-link'),
-                html.Img(src='assets/abstract.png',
+                html.H3('''Generated structures can be further used in 
+                        computational analyses such as molecular docking, see: 
+                        ''',
+                className = 'homepage-text-main'),
+                
+                html.A('''PUR-GEN: A Web Server for Automated Generation of Polyurethane Fragment Libraries, 
+                       K. Szleper, A. Raczyńska, A. Góra, 2024 (to be published)''', 
+                       className='homepage-publication-link'),
+                     #   href='http://www.doi.pl/',className='homepage-publication-link'), #Link of publication to be added
+                html.Img(src='assets/graphical-abstract.png',#'assets/abstract.png',
                          style={'width': '40%','margin-top': '10px', 'margin-bottom':'10px'}),
                          
                 html.H3("Contact Information", className = 'contact-info'),
                 html.H3("Katarzyna Szleper", className = 'email-info'),
-                html.H3("email: k.szleper@tunnelinggroup.pl", className = 'email-info'),
+                html.H3("email: k.szleper@tunnelinggroup.pl  katarzyna.szleper@polsl.pl", className = 'email-info'),
                 html.H3("VISIT OUR WEBPAGE!", className = 'tg-info'),
                 html.A("Tunneling Group", href='http://www.tunnelinggroup.pl/', 
                        title = 'http://www.tunnelinggroup.pl/', className = 'tg-link'),

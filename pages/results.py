@@ -9,7 +9,11 @@ import zipfile
 import tempfile
 
 
-dash.register_page(__name__, path='/results')
+dash.register_page(__name__, 
+                   path='/results',
+                   title='results PUR-GEN',
+                   name='results PUR-GEN',
+                   image='assets/logo.png')
 
 layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
                       
@@ -86,26 +90,22 @@ def process_substrates(stored_substrates, stored_size, stored_capping, tab):
     elif tab == 'tab-table':
         tab_output = html.Div(children=[
             html.Center(html.H4('''Calculated PUR fragments properties:
-                    molecular weight, number of heavy atoms, 
-                    number of rotatable bonds, presence of ester bond, 
-                    presence of ether bond, number of aromatic atoms, 
-                    aromatic proportion (number of aromatic atoms divided
-                     by number of heavy atoms), Crippen-Wildman partition 
-                    coefficient (clogP), topological polar surface area (TPSA), 
-                    Crippen-Wildman molar refractivity (MR).''', 
+                    molecular weight, heavy atom count, number of rotatable bonds, 
+            presence of ester and ether bonds, count of aromatic atoms, aromatic proportion 
+            (ratio of aromatic atoms to heavy atoms), Crippen-Wildman partition coefficient 
+            (cLogP), topological polar surface area 
+            (TPSA) and Crippen-Wildman molar refraction (MR).''', 
                     className = 'results-properties-description')),
             table,
             html.Br()])
     elif tab == 'tab-histograms':
         tab_output = html.Div(children=[
             html.Center(html.H4('''Calculated PUR fragments properties:
-                    molecular weight, number of heavy atoms, 
-                    number of rotatable bonds, presence of ester bond, 
-                    presence of ether bond, number of aromatic atoms, 
-                    aromatic proportion (number of aromatic atoms divided
-                     by number of heavy atoms), Crippen-Wildman partition 
-                    coefficient (clogP), topological polar surface area (TPSA), 
-                    Crippen-Wildman molar refractivity (MR).''', 
+                    molecular weight, heavy atom count, number of rotatable bonds, 
+            presence of ester and ether bonds, count of aromatic atoms, aromatic proportion 
+            (ratio of aromatic atoms to heavy atoms), Crippen-Wildman partition coefficient 
+            (cLogP), topological polar surface area 
+            (TPSA) and Crippen-Wildman molar refraction (MR).''', 
                     className = 'results-properties-description')),
             dcc.Graph(figure=fig)])
     return summary, tab_output, compounds_properties_df.to_dict()

@@ -5,7 +5,11 @@ import layouts
 import callbacks
 
 
-dash.register_page(__name__, path='/run')
+dash.register_page(__name__, 
+                   path='/run',
+                   title='run PUR-GEN',
+                   name='run PUR-GEN',
+                   image='assets/logo.png')
 
 # Read the compounds
 isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/isocyanates.txt", "r").read().splitlines()]
@@ -23,10 +27,10 @@ layout = html.Div(style={'display': 'flex'},
                                     href='/'),]),
     html.Div(id = 'left-panel-before-reaction',
             children = [html.H3("SELECT SUBSTRATES",className='run-select-text'),
-                        html.H4("Choose at least one isocyanate and one hydroxyl compound.",
+                        html.H4("Choose at least one isocyanate and one alcohol.",
                                 className='run-select-info-text'),
                         layouts.create_switch_with_label('show isocyanates','switch-isocyanate','assets/isocyanates.png'),
-                        layouts.create_switch_with_label('show hydroxyl compounds','switch-hydroxyl','assets/polyols.png'),
+                        layouts.create_switch_with_label('show alcohols','switch-hydroxyl','assets/alcohols.png'),
                         layouts.create_upload_component(),
                         dcc.Store(id='store-substrates'),
                         layouts.create_select_size_component(),
@@ -42,7 +46,7 @@ layout = html.Div(style={'display': 'flex'},
               html.Div([
                   html.Div(id = 'right-panel-content',
                            children = [layouts.create_checkbox_list(isocyanate_list, isocyanate_all, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox'),
-                                       layouts.create_checkbox_list(hydroxyl_list, hydroxyl_all, "Select hydroxyl compounds:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
+                                       layouts.create_checkbox_list(hydroxyl_list, hydroxyl_all, "Select alcohols:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
                                        ],
                            style={'display':'flex'})],
                        style={'flex': '2'}),
