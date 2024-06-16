@@ -21,7 +21,7 @@ layout = html.Div(style={'display': 'flex'},
     children=[html.Div(id = 'left-panel-content',className='run-left-panel-layout',
                        children = [
     html.Div(id = 'left-panel-header',
-            children = [html.A(html.Img(src='assets/pur-gen.png', 
+            children = [html.A(html.Img(src='assets/pur-gen_tg_short_logo.png', 
                                     style={'max-width': '85%', 
                                            'height': 'auto'}), 
                                     href='/'),]),

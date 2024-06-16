@@ -18,8 +18,8 @@ dash.register_page(__name__,
 layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
                       
     children = [
-        html.Center(style = {'alignItems': 'center', 'background-color': '#F0F0F0'},
-        children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),]),
+        html.Center(style = {'alignItems': 'center', 'background-color': '#F0F0F0', 'margin-top':'20px'},
+        children = [html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/'),]),
         
         html.Div(style={'display':'flex'}, children=[
         html.Div(style={'flex':'1'},children=[

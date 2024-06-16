@@ -11,7 +11,7 @@ dash.register_page(__name__,
 layout = html.Div(
     className='home-page-style',
     children = [html.Center(style = {'alignItems': 'center'},
-    children = [html.A(html.Img(src='assets/pur-gen.png', className = 'homepage-logo'),href='/'),
+    children = [html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/'),
                 html.Div(className='header-buttons',children=[
                 dcc.Link(html.Button('HOW TO USE'), href='/how-to-use'),
                 dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
