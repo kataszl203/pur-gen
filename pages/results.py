@@ -32,23 +32,41 @@ layout = html.Div(id = 'resluts-page', style = {'display': 'block'},
             
             # Download button - 2D structures (zipped .mol files)
              html.Div(style={'margin-bottom': '10px'}, children=[
+                 dcc.Loading(
+                    id='loading-2d',
+                    type='circle',  # You can use 'default', 'circle', or 'dot'
+                    children=[
                  html.Button('2D STRUCTURES (.mol)', id='generate-2d', n_clicks=0),
-                 dcc.Download(id="download-2d")]),
+                 dcc.Download(id="download-2d")])]),
 
             # Download button - 3D structures (zipped .mol2 files)
              html.Div(style={'margin-bottom': '10px'}, children=[
+                 dcc.Loading(
+                    id='loading-3d',
+                    type='circle',  # You can use 'default', 'circle', or 'dot'
+                    children=[
                  html.Button('3D STRUCTURES (.mol2)', id='generate-3d', n_clicks=0),
-                 dcc.Download(id='download-3d')]),
+                 dcc.Download(id='download-3d')])]),
 
             # Download button - 3D structures with conformers (zipped .mol2 files)
              html.Div(style={'margin-bottom': '10px'}, children=[
-                 html.Button('3D CONFORMERS (.mol2)', id='generate-conformers', n_clicks=0),
-                 dcc.Download(id='download-conformers')]),
+                 dcc.Loading(
+                    id='loading-conformers',
+                    type='circle',  # You can use 'default', 'circle', or 'dot'
+                    children=[
+                        html.Button('3D CONFORMERS (.mol2)', id='generate-conformers', n_clicks=0),
+                        dcc.Download(id='download-conformers')])]),
+             html.H4("Generation of conformers may take longer, especially with numerous compounds.",
+                                className='run-select-info-text'), 
             
             # Download button - properties table (.csv file)
              html.Div(style={'margin-bottom': '10px'}, children=[
+                 dcc.Loading(
+                    id='loading-csv',
+                    type='circle',  # You can use 'default', 'circle', or 'dot'
+                    children=[
                  html.Button('PROPERTIES (.csv)', id='generate-csv', n_clicks=0),
-                 dcc.Download(id="download-csv")])
+                 dcc.Download(id="download-csv")])])
                 ]),
             ]),
 

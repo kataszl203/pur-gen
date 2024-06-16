@@ -7,6 +7,7 @@ import io
 import base64
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+from concurrent.futures import ThreadPoolExecutor
 
 # General settings
 conformer = ob.OBConformerSearch()
@@ -273,6 +274,46 @@ def generate_mol2(smiles, idx):
     pybel.Molecule(obmol).title = f"PU_{idx + 1}"
     mol2_content = conversion.WriteString(obmol)
     return mol2_content
+
+def generate_single_conformer(smiles, idx, j, conversion):
+    mol = pybel.readstring("smi", smiles)
+    mol.addh()
+    mol.make3D()
+    pff.Setup(mol.OBMol)
+    pff.DiverseConfGen(0.5, 1000000, 50.0, False)
+    pff.GetConformers(mol.OBMol)
+    
+    if mol.OBMol.NumConformers() <= j:
+        return None  # Skip if j is out of range
+    
+    mol.OBMol.SetConformer(j)
+    pybel.Molecule(mol.OBMol).title = f"PU_{idx + 1}_{j}"
+    return conversion.WriteString(mol.OBMol)
+
+def generate_multiple_conformers(smiles, idx):
+    num_conformers = 20
+    conversion = ob.OBConversion()
+    conversion.SetInAndOutFormats("smi", "mol2")
+    
+    mol = pybel.readstring("smi", smiles)
+    mol.addh()
+    mol.make3D()
+    pff.Setup(mol.OBMol)
+    pff.DiverseConfGen(0.5, 1000000, 50.0, False)
+    pff.GetConformers(mol.OBMol)
+    if mol.OBMol.NumConformers() < num_conformers:
+        num_conformers = mol.OBMol.NumConformers()
+    
+    conformers_content = []
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(generate_single_conformer, smiles, idx, j, conversion) for j in range(num_conformers)]
+        for future in futures:
+            result = future.result()
+            if result is not None:
+                conformers_content.append(result)
+    
+    return conformers_content
+
 
 def generate_conformers(smiles, idx):
     num_conformers = 20
