@@ -28,7 +28,7 @@ layout = html.Div(
                 className = 'homepage-text-main'),
                 
                 html.A('''PUR-GEN: A Web Server for Automated Generation of Polyurethane Fragment Libraries, 
-                       K. Szleper, A. Raczyńska, A. Góra, 2024 (to be published)''', 
+                       K. Szleper, O. Kovalenko, A. Góra, A. Raczyńska, 2024 (to be published)''', 
                        className='homepage-publication-link'),
                      #   href='http://www.doi.pl/',className='homepage-publication-link'), #Link of publication to be added
                 html.Img(src='assets/graphical-abstract.png',#'assets/abstract.png',
