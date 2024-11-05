@@ -96,12 +96,12 @@ def smiles_to_pil_image(input_smiles):
     return pil_img
 
 # Substrates properties
-iso = Chem.MolFromSmiles('N=C=O')
-diiso = Chem.MolFromSmiles('O=C=N.N=C=O')
-ol = Chem.MolFromSmiles('CO')
-ol_2 = Chem.MolFromSmiles('COC.CO')
-diol = Chem.MolFromSmiles('OC.CO')
-diol_2 = Chem.MolFromSmiles('OC.COC.CO')
+iso_pattern = Chem.MolFromSmiles('N=C=O')
+diiso_pattern = Chem.MolFromSmiles('O=C=N.N=C=O')
+triiso_pattern = Chem.MolFromSmiles('O=C=N.N=C=O.N=C=O')
+monohydroxy_patters = Chem.MolFromSmarts('[OX2H][C;!$(C=O)]')
+dihydroxy_pattern = Chem.MolFromSmarts('[OX2H][C;!$(C=O)].[OX2H][C;!$(C=O)]')
+trihydroxy_pattern = Chem.MolFromSmarts('[OX2H][C;!$(C=O)].[OX2H][C;!$(C=O)].[OX2H][C;!$(C=O)]')
 
 def prepare_reaction(smiles):
   
@@ -110,51 +110,52 @@ def prepare_reaction(smiles):
         mol = Chem.MolFromSmiles(substrate)
         substrates_mols.append(mol)
 
-    ## New
     iso_mols = []  # isocyanates and diisocyanates
-    poliol_mols = []  # mono and poliols
+    poliol_mols = []  # monohydroxy and dihydroxy alcohols
+    not_classified_smiles = []
 
     # Assign properties to the substrates according to the functional group
     n_diiso = 0
     n_iso = 0
     n_ol = 0
     n_diol = 0
-    n = 0
-    for comp in substrates_mols:
-        if comp.HasSubstructMatch(diiso):
-            comp.SetProp('func_group', 'diiso')
-            iso_mols.append(comp)
-            n_diiso += 1
+    n_all_classified = 0
 
-        elif comp.HasSubstructMatch(iso):
-            comp.SetProp('func_group', 'iso')
-            iso_mols.append(comp)
-            n_iso += 1
-
-        elif comp.HasSubstructMatch(ol):
-            #Check if ether bond present 
-            if comp.HasSubstructMatch(ol_2):
-                #Check if ether bond and two OH present
-                if comp.HasSubstructMatch(diol_2):
-                    comp.SetProp('func_group', 'diol')
-                    poliol_mols.append(comp)
-                    n_diol += 1
+    for i, comp in enumerate(substrates_mols):
+        # Classify isocyanates
+        if comp.HasSubstructMatch(iso_pattern):
+            if comp.HasSubstructMatch(diiso_pattern):
+                if comp.HasSubstructMatch(triiso_pattern):
+                    comp.SetProp('func_group', 'diiso')
+                    comp.SetProp('poly_func', 'triiso')
                 else:
-                    comp.SetProp('func_group', 'ol')
-                    poliol_mols.append(comp)
-                    n_ol += 1
+                    comp.SetProp('func_group', 'diiso')
+                n_diiso += 1
+            else:
+                comp.SetProp('func_group', 'iso')
+                n_iso += 1
+            iso_mols.append(comp)
+            n_all_classified += 1
+        # Classify alcohols
+        elif comp.HasSubstructMatch(monohydroxy_patters):
+            if comp.HasSubstructMatch(dihydroxy_pattern):
+                if comp.HasSubstructMatch(trihydroxy_pattern):
+                    comp.SetProp('func_group', 'diol')
+                    comp.SetProp('poly_func', 'triol')
+                else:
+                    comp.SetProp('func_group', 'diol')
+                n_diol += 1
             else:
                 comp.SetProp('func_group', 'ol')
-                poliol_mols.append(comp)
                 n_ol += 1
-        elif comp.HasSubstructMatch(diol):
-            comp.SetProp('func_group', 'diol')
             poliol_mols.append(comp)
-            n_diol += 1
-        n += 1
+            n_all_classified += 1
+        # If not classified return information
+        else:
+            not_classified_smiles.append(smiles[i])
 
-    info = [n, n_iso, n_diiso, n_ol, n_diol]
-    return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols
+    info = [n_all_classified, n_iso, n_diiso, n_ol, n_diol]
+    return (n_iso != 0 or n_diiso != 0) and (n_ol != 0 or n_diol != 0), info, iso_mols, poliol_mols, not_classified_smiles
 
 
 def perform_dimerization(a_list, b_list):

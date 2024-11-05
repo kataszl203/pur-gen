@@ -52,7 +52,7 @@ def show_reactions(smiles, size_value, capping_group=None):
     if not smiles:
         return summary, structures_imgs, capped_products
     
-    reaction, info, iso_mols, poliol_mols = utils.prepare_reaction(smiles)
+    reaction, info, iso_mols, poliol_mols, not_classified_smiles = utils.prepare_reaction(smiles)
     
     if not reaction:
         return summary, structures_imgs, capped_products
