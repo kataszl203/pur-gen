@@ -1,0 +1,2 @@
+toluene-2,4,6-triyl triisocyanate;Cc1c(N=C=O)cc(N=C=O)cc1N=C=O
+butano-1,2,4-triol;OCCC(O)CO
