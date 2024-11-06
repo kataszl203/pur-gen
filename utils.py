@@ -327,7 +327,7 @@ def generate_conformers(smiles, idx):
     mol.addh()
     mol.make3D()
     pff.Setup(mol.OBMol)
-    pff.DiverseConfGen(0.5, 1000000, 50.0, False)
+    pff.DiverseConfGen(0.5, 1000, 50.0, False)
     pff.GetConformers(mol.OBMol)
     if mol.OBMol.NumConformers() <= num_conformers:
         num_conformers = mol.OBMol.NumConformers()
