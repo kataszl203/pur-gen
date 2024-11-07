@@ -350,6 +350,7 @@ input[type="button"].button-primary:focus {
 .run-select-info-text {
   font-weight: normal;
   color: gray;
+  margin-left: 20px;
   margin-top: 5px;
   margin-bottom: 15px
 }
