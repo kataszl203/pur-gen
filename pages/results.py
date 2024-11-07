@@ -271,7 +271,7 @@ def download_conformers(n_clicks, conformers_content):
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
             for idx, smiles in enumerate(smiles_list):
-                conformers_content = utils.generate_multiple_conformers(smiles, idx)
+                conformers_content = utils.generate_conformers(smiles, idx)
                 for conf_num, conformer in enumerate(conformers_content):
                     mol_filename = f"PUR_{idx + 1}_{conf_num}.mol2"
                     zipf.writestr(mol_filename, conformer)
