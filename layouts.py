@@ -1,5 +1,9 @@
 from dash import html, dcc
 import dash_daq as daq
+import dash_ag_grid as dag
+import dash_bootstrap_components as dbc
+from pandas.core.interchange.dataframe_protocol import DataFrame
+
 import utils
 
 def create_checkbox_list(options, all_options, table_title, table_id, checkall_id, checklist_id):
@@ -27,7 +31,8 @@ def create_switch_with_label(label_text, switch_id,image_source):
     return html.Div([
         daq.BooleanSwitch(
             id=switch_id,
-            on=False
+            on=False,
+            color='#b292f3'
         ),
         html.Div([html.H4(
             label_text,
@@ -52,6 +57,92 @@ def create_upload_component():
                 children=[],className='successful-upload'),
         html.A("sample_input.txt", href="static/sample_input.txt",className='successful-upload')
     ])
+
+def create_texarea_component():
+    columnDefs = [
+        {"field": "index", "headerName": "INDEX"},
+        {"field": "smiles", "headerName": "SMILES"},
+        {"field": "substrate_type", "headerName": "TYPE"},
+        {"field": "picture", "headerName": "PICTURE" , "cellRenderer": "ImgThumbnail",}
+
+    ]
+    defaultColDef = {
+        "flex": 1,
+        "minWidth": 125,
+        "editable": False,
+        "filter": True,
+        "cellDataTyoe": False,
+    }
+    return html.Div([
+        dbc.Row([
+            dbc.Col([html.Div('test', id="character_count_indicator", style={"text-align": "right"}),
+                     dcc.Textarea(
+            id='upload-substrates-textarea',
+            placeholder="Enter your own input...",
+            className='upload-component-text',
+            style={
+                'width': '100%',
+                'resize': 'none',
+                'whiteSpace': 'nowrap',
+                "margin-right": "0px",
+                "margin-bottom": "0"
+            },
+            spellCheck=False,
+            draggable=False,
+            wrap=False,
+            maxLength=2000
+        ),])
+        ], justify='center', align='stretch'),
+        dbc.Row([
+            dbc.Col([html.Button('SAMPLE INPUT', id='sample-input-button', n_clicks=0, style={
+            'width': '100%',
+            'margin-left': '0px',
+            'margin-right': '0px',
+        }),], sm=6),
+            dbc.Col([html.Button('SMILES GENERATOR', id='smiles-link-button', n_clicks=0, style={
+                'width': '100%',
+                'margin-left': '0px',
+                'margin-right': '0px',
+            }), ], sm=6),
+        ], justify='between', align='stretch'),
+        dbc.Row([dbc.Col([html.Button('LOAD', id='apply-text-input-button', n_clicks=0, style={
+            'width': '100%',
+            "margin-top": "5px",
+            'margin-left': '0px',
+            'margin-right': '0px',
+        }),], ),], justify='center', align='stretch'),
+        dbc.Row([
+            dbc.Col([
+                dcc.Textarea(
+                    id="load-output-log",
+                    className='upload-component-text-log',
+                    style={
+                        'width': '100%',
+                        'resize': 'none',
+                        'whiteSpace': 'pre',
+                        "margin-right": "0px",
+                    },
+                    spellCheck=False,
+                    draggable=False,
+                    readOnly=True,
+                    wrap=False,
+                )
+
+            ])
+        ]),
+        html.H3("SELECTED SUBSTRATES", className='run-select-text'),
+        dag.AgGrid(
+            id="grid-cell-loaded-components",
+            columnDefs=columnDefs,
+            rowData=[],
+            defaultColDef=defaultColDef,
+            dashGridOptions={'pagination': True, "rowHeight": 100},
+            columnSize="autoSize",
+            columnSizeOptions={"keys":["index", "picture", "substrate_type"]}
+        ),
+        dbc.Modal(id="img-modal", size="md", centered=True,),
+    ], style={"margin-right": "0px"})
+
 
 def create_select_size_component():
     return html.Div([

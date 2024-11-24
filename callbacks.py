@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from dash import html
 import utils
 import base64
@@ -44,6 +46,42 @@ def validate_input_file(contents, filename):
     
     return f"{filename} is uploaded.", uploaded_substrates
 
+
+def validate_text_input(contents: str) -> Tuple[str, list, bool, list]:
+    uploaded_substrates = []
+    incorrect_smiles = []
+    return_string: str = f""
+
+    if not contents or contents=="":
+        return f"Input is empty.", uploaded_substrates, False, []
+
+    lines = contents.splitlines()
+
+    if not lines:
+        return "Input is empty or in the wrong format.", uploaded_substrates, False, []
+
+    if lines[0] != 'Name;SMILES':
+        start_index = 0
+    else:
+        start_index = 1
+
+    for line in lines[start_index:]:
+        if line == "":
+            continue
+
+        try:
+            name, smiles = line.split(";")
+            if not utils.is_valid_smiles(smiles):
+                incorrect_smiles.append(f"{name}: {smiles}")
+                return_string += f"Compounds in SMILES not detected for line: \n\"{line}\".\n\n"
+                continue
+            uploaded_substrates.append(smiles)
+        except ValueError:
+            return_string += f"Wrong input format in line: \n\"{line}\".\n\n"
+            continue
+
+    return return_string+f"Input has been loaded.", uploaded_substrates, True, incorrect_smiles
+
 def show_reactions(smiles, size_value, capping_group=None):
     summary = ""
     structures_imgs = ""
@@ -89,6 +127,9 @@ def show_reactions(smiles, size_value, capping_group=None):
         html.Div(f'Isocyanate capping group: {capping_group}', style={'margin-left':'20px', 'margin-top': '10px'}),
         html.Div(f'Selected size: {size_value} units', style={'margin-left':'20px', 'margin-top': '10px'}),
         html.Div(f'Number of generated PUR fragments: {len(capped_products)}', style={'margin-left':'20px', 'margin-top': '20px'}),
+        html.Button('DOWNLOAD GENERATED DATA', id='download-generated-data', n_clicks=0, style={
+            'width': '500px', "margin-top": "20px"
+        })
     ], className='summary-text')
     
     structures_imgs = [html.Div(products_imgs)]

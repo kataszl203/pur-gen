@@ -307,6 +307,18 @@ input[type="button"].button-primary:focus {
   text-shadow: 1.2px 1.2px #919191;
 }
 
+.highlighted-left-text-margin-2 {
+  font-weight: 200;
+  letter-spacing: .1rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left:5px;
+  color: #737373;
+  text-align: left;
+  text-transform: uppercase;
+  text-shadow: 1.2px 1.2px #919191;
+}
+
 .highlighted-center-text {
   font-weight: 200;
   font-size: 25px;
@@ -355,6 +367,24 @@ input[type="button"].button-primary:focus {
   margin-bottom: 15px
 }
 
+.run-select-info-text2 {
+  font-weight: normal;
+  text-align: justify;
+  color: gray;
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 15px
+}
+
+.run-char-count-text {
+  font-weight: bold;
+  color: #b292f3;
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: end;
+}
+
 .run-left-panel-layout {
   flex: 1;
   padding: 5px;
@@ -388,6 +418,49 @@ input[type="button"].button-primary:focus {
   cursor: pointer;
 }
 
+.upload-component-text {
+  width: 99%;
+  height: 300px;
+  color: gray;
+  line-height: 15px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: lightgray;
+  background-color: white;
+  border-radius: 5px;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /*cursor: pointer;*/
+}
+
+.upload-component-text:focus {
+  border-color: #b292f3;
+  outline: none;
+}
+
+.upload-component-text-log {
+  width: 99%;
+  height: 100px;
+  color: gray;
+  line-height: 15px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: lightgray;
+  background-color: white;
+  border-radius: 5px;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /*cursor: pointer;*/
+}
+.upload-component-text-log:focus {
+  outline: none;
+  /*cursor: pointer;*/
+}
+
 .successful-upload {
   color: gray;
   margin-top: -15px;
@@ -405,7 +478,7 @@ input[type="button"].button-primary:focus {
 .reactants-image {
   height: 150px;
   width:auto;
-  margin: 10
+  margin: 10px
 }
 
 .arrow-image {
@@ -453,4 +526,21 @@ input[type="button"].button-primary:focus {
     flex-wrap: wrap;
     justify-content: flex-start;
     margin-top: 20px
+}
+
+.radio_style{
+  appearance: none;
+  -webkit-appearance: none;
+
+  /* For a circular appearance we need a border-radius. */
+  border-radius: 50%;
+
+  /* The background will be the radio dot's color. */
+  background: #b292f3;
+
+  /* The border will be the spacing between the dot and the outer circle */
+  border: 5px solid #FFF;
+
+  /* And by creating a box-shadow with no offset and no blur, we have an outer circle */
+  box-shadow: 0 0 0 1px #b292f3;
 }
