@@ -117,6 +117,7 @@ def create_texarea_component():
                     id="load-output-log",
                     className='upload-component-text-log',
                     style={
+                        'display': 'none',
                         'width': '100%',
                         'resize': 'none',
                         'whiteSpace': 'pre',

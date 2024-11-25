@@ -43,7 +43,7 @@ colDef = [
 
 isocyanate_table = dag.AgGrid(
     id="isocyanate-table",
-    style={"height": 800, "width": "100%"},
+    style={"height": 800, "width": "95%"},
     rowData=isocyanate_list_table,
     columnDefs=colDef,
     defaultColDef=defaultColDef_temp,
@@ -61,7 +61,7 @@ isocyanate_table = dag.AgGrid(
 )
 hydroxyl_table = dag.AgGrid(
     id="hydroxyl-table",
-    style={"height": 800, "width": "100%"},
+    style={"height": 800, "width": "95%"},
     rowData=hydroxyl_list_table,
     columnDefs=colDef,
     defaultColDef=defaultColDef_temp,
@@ -130,14 +130,16 @@ layout = html.Div(style={'display': 'flex'},
                            children = [#layouts.create_checkbox_list(isocyanate_list, isocyanate_all, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox'),
                                         html.Div([
                                             dbc.Row([
+                                                dbc.Col([
                                                 dbc.Row([html.H3("Select isocyanates: ", className='highlighted-left-text', id="isocyanate-table-label"),]),
                                                 dbc.Row([isocyanate_table,]),
-                                            ], id ="isocyanate-table-div" ),
-                                            dbc.Modal(id="isocyanate-modal", size="md", centered=True, ),
-                                            dbc.Row([
+                                            ], id ="isocyanate-table-div", style={"margin-right": "0px", "margin-left": "0px"} ),
+
+                                            dbc.Col([
                                                 dbc.Row([html.H3("Select alcohols:", className='highlighted-left-text', id="hydroxyl-table-label"),]),
                                                 dbc.Row([hydroxyl_table,]),
-                                            ], id="hydroxyl-table-div" ),
+                                            ], id="hydroxyl-table-div", style={"margin-right": "0px", "margin-left": "0px"}   ), ]),
+                                            dbc.Modal(id="isocyanate-modal", size="md", centered=True, ),
                                             dbc.Modal(id="alcohol-modal", size="md", centered=True, )
                                         ], ),
                                        #layouts.create_checkbox_list(hydroxyl_list, hydroxyl_all, "Select alcohols:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
@@ -177,20 +179,20 @@ def count_characters(value: Optional[str]):
         Input('switch-isocyanate','on'))
 def show_substrates(hydroxyl_clicks,isocyanate_clicks):
     if isocyanate_clicks and hydroxyl_clicks:
-        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
-        hydroxyl_table_style = {'display':'block', "height": "800px", 'margin-left': '10px'}
-        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
-        isocyanate_table_style = {'display':'block', "height": "800px", 'margin-left': '10px'}
+        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', "margin-right": "5px"}
+        hydroxyl_table_style = {'display':'block', "height": "800px", "margin-right": "5px"}
+        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', "margin-right": "5px"}
+        isocyanate_table_style = {'display':'block', "height": "800px", "margin-right": "5px"}
     
     elif isocyanate_clicks:       
         hydroxyl_list_style = {'display':'none'}
         hydroxyl_table_style = {'display': 'none'}
-        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
-        isocyanate_table_style = {'display': 'block', "height": "800px", 'margin-left': '10px'}
+        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', "margin-right": "5px"}
+        isocyanate_table_style = {'display': 'block', "height": "800px", "margin-right": "5px"}
 
     elif hydroxyl_clicks:        
-        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
-        hydroxyl_table_style = {'display': 'block', "height": "800px", 'margin-left': '10px'}
+        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', "margin-right": "5px"}
+        hydroxyl_table_style = {'display': 'block', "height": "800px", "margin-right": "5px"}
         isocyanate_list_style = {'display':'none'}
         isocyanate_table_style = {'display': 'none'}
     
@@ -235,6 +237,7 @@ def info_about_size(size):
 
 
 @callback(Output('load-output-log', 'value'),
+          Output('load-output-log', 'style'),
           Output("custom-compounds", "data"),
           Input("apply-text-input-button", "n_clicks"),
           State('upload-substrates-textarea', 'value'),
@@ -248,8 +251,14 @@ def load_text_input(nclicks, text, ):
         for ncs in not_classified_smiles:
             msg += f"{ncs}, "
             uploaded_substrates.remove(ncs)
-
-    return msg, uploaded_substrates
+    style = {
+                        'display': 'block',
+                        'width': '100%',
+                        'resize': 'none',
+                        'whiteSpace': 'pre',
+                        "margin-right": "0px",
+                    }
+    return msg, style,uploaded_substrates
 
 @callback(Output('grid-cell-loaded-components', 'rowData'),
           Output('make-oligomers-button', 'href'),
@@ -260,7 +269,7 @@ Output('stored-substrates', 'data'),
         #Input('isocyanate-list-checkbox', 'value'),
         #Input('hydroxyl-list-checkbox', 'value'),
           )
-def fill_loaded_data(custom_compounds, isocyanate_checkbox_value, hydroxyl_checkbox_value):
+def fill_loaded_data(custom_compounds, hydroxyl_checkbox_value, isocyanate_checkbox_value):
     images = []
     substrate_type = []
     if not custom_compounds:
@@ -281,7 +290,11 @@ def fill_loaded_data(custom_compounds, isocyanate_checkbox_value, hydroxyl_check
     for element in smiles:
         images.append(utils.smiles_to_image(element))
     reaction, info, iso_mols, poliol_mols, not_classified_smiles = utils.prepare_reaction(smiles)
-    temp = iso_mols+poliol_mols
+    temp = []
+    for mol in iso_mols:
+        temp.append(mol)
+    for mol in poliol_mols:
+        temp.append(mol)
     for t in temp:
         substrate_type.append(t.GetProp('func_group'))
     products_df = pd.DataFrame({'index': pd.Index(range(1, len(smiles) + 1)), 'smiles': smiles, "picture": images, "substrate_type": substrate_type})
