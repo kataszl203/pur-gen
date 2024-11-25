@@ -129,19 +129,21 @@ layout = html.Div(style={'display': 'flex'},
                   html.Div(id = 'right-panel-content',
                            children = [#layouts.create_checkbox_list(isocyanate_list, isocyanate_all, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox'),
                                         html.Div([
-                                            html.H3("Select isocyanates: ", className='highlighted-left-text', id="isocyanate-table-label"),
-                                            isocyanate_table,
-                                            dbc.Modal(id="isocyanate-modal", size="md", centered=True, )
-
-                                        ], id="isocyanate-table-div"),
-                                       #layouts.create_checkbox_list(hydroxyl_list, hydroxyl_all, "Select alcohols:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
-                                        html.Div([
-                                            html.H3("Select alcohols:", className='highlighted-left-text', id="hydroxyl-table-label"),
-                                            hydroxyl_table,
+                                            dbc.Row([
+                                                dbc.Row([html.H3("Select isocyanates: ", className='highlighted-left-text', id="isocyanate-table-label"),]),
+                                                dbc.Row([isocyanate_table,]),
+                                            ], id ="isocyanate-table-div" ),
+                                            dbc.Modal(id="isocyanate-modal", size="md", centered=True, ),
+                                            dbc.Row([
+                                                dbc.Row([html.H3("Select alcohols:", className='highlighted-left-text', id="hydroxyl-table-label"),]),
+                                                dbc.Row([hydroxyl_table,]),
+                                            ], id="hydroxyl-table-div" ),
                                             dbc.Modal(id="alcohol-modal", size="md", centered=True, )
-                                        ], id="hydroxyl-table-div")
+                                        ], ),
+                                       #layouts.create_checkbox_list(hydroxyl_list, hydroxyl_all, "Select alcohols:", 'hydroxyl-list', 'select-all-hydroxyl', 'hydroxyl-list-checkbox'),
+
                                        ],
-                           style={'display':'flex'})],
+                           style={})],
                        style={'flex': '2'}),
               ])
 
@@ -167,28 +169,28 @@ def count_characters(value: Optional[str]):
 # Define callback to show substrates lists
 @callback(#Output('hydroxyl-list', 'style'),
         #Output('isocyanate-list', 'style'),
-        Output('hydroxyl-table-div', 'style'),
-        Output('isocyanate-table-div', 'style'),
+        Output('hydroxyl-table-label', 'style'),
+        Output('isocyanate-table-label', 'style'),
         Output('hydroxyl-table', 'style'),
         Output('isocyanate-table', 'style'),
         Input('switch-hydroxyl','on'),
         Input('switch-isocyanate','on'))
 def show_substrates(hydroxyl_clicks,isocyanate_clicks):
     if isocyanate_clicks and hydroxyl_clicks:
-        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px'}
-        hydroxyl_table_style = {'display':'block', "height": "800px"}
-        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px'}
-        isocyanate_table_style = {'display':'block', "height": "800px"}
+        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
+        hydroxyl_table_style = {'display':'block', "height": "800px", 'margin-left': '10px'}
+        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
+        isocyanate_table_style = {'display':'block', "height": "800px", 'margin-left': '10px'}
     
     elif isocyanate_clicks:       
         hydroxyl_list_style = {'display':'none'}
         hydroxyl_table_style = {'display': 'none'}
-        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px'}
-        isocyanate_table_style = {'display': 'block', "height": "800px"}
+        isocyanate_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
+        isocyanate_table_style = {'display': 'block', "height": "800px", 'margin-left': '10px'}
 
     elif hydroxyl_clicks:        
-        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px'}
-        hydroxyl_table_style = {'display': 'block', "height": "800px"}
+        hydroxyl_list_style = {'display':'block','flex': '1', 'padding': '10px', 'margin-left': '10px'}
+        hydroxyl_table_style = {'display': 'block', "height": "800px", 'margin-left': '10px'}
         isocyanate_list_style = {'display':'none'}
         isocyanate_table_style = {'display': 'none'}
     
@@ -199,7 +201,7 @@ def show_substrates(hydroxyl_clicks,isocyanate_clicks):
         isocyanate_table_style = {'display': 'none'}
 
     #return hydroxyl_list_style, isocyanate_list_style, hydroxyl_table_style, isocyanate_table_style
-    return hydroxyl_table_style, isocyanate_table_style, hydroxyl_table_style, isocyanate_table_style
+    return hydroxyl_list_style, isocyanate_list_style, hydroxyl_table_style, isocyanate_table_style
 
 #Select all
 @callback(

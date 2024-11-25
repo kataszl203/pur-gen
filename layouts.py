@@ -99,11 +99,11 @@ def create_texarea_component():
             'margin-left': '0px',
             'margin-right': '0px',
         }),], sm=6),
-            dbc.Col([html.Button('SMILES GENERATOR', id='smiles-link-button', n_clicks=0, style={
+            dbc.Col([html.A(html.Button('SMILES GENERATOR', id='smiles-link-button', n_clicks=0, style={
                 'width': '100%',
                 'margin-left': '0px',
                 'margin-right': '0px',
-            }), ], sm=6),
+            }), href="https://www.cheminfo.org/flavor/malaria/Utilities/SMILES_generator___checker/index.html", target="_blank"), ], sm=6),
         ], justify='between', align='stretch'),
         dbc.Row([dbc.Col([html.Button('LOAD', id='apply-text-input-button', n_clicks=0, style={
             'width': '100%',

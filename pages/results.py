@@ -213,7 +213,7 @@ layout = dcc.Loading(
                 html.Div(id='summary-output'),
 
             ],),
-            html.Div(style={'flex': '2'}, children=[
+            html.Div(style={'flex': '2', "margin-left": "20px"}, children=[
         html.H3("UPLOADED SUBSTRATES", className='highlighted-left-text-margin'),
         dag.AgGrid(
             id="grid-cell-loaded-components-results",

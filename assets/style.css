@@ -544,3 +544,54 @@ input[type="button"].button-primary:focus {
   /* And by creating a box-shadow with no offset and no blur, we have an outer circle */
   box-shadow: 0 0 0 1px #b292f3;
 }
+
+.box {
+  line-height: 12px;
+  margin-left: 20px;
+  margin-right: 10px;
+  display: block;
+  font-size: 9px;
+  border-radius: 5px;
+  padding: 2px;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  text-align: justify;
+  width: 90%;
+}
+
+.link-box {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+  line-height: 16px;
+  margin-left: 20px;
+  margin-right: 10px;
+  display: inline-block;
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  text-align: justify;
+  width: 90%;
+}
+
+.link-box:link {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.link-box:hover {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.link-box:active {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
