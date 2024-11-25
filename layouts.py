@@ -151,9 +151,9 @@ def create_select_size_component():
         dcc.RadioItems(
             id='select-size',
             options=[
-                {'label': html.Label(['2 units', html.Img(src='assets/size-2.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '2'},
-                {'label': html.Label(['3 units', html.Img(src='assets/size-3.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '3'},
-                {'label': html.Label(['4 units', html.Img(src='assets/size-4.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-bottom':'-10px'})]), 'value': '4'},
+                {'label': html.Label(['2 units', html.Img(src='assets/size-2.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-top':'-5px'})]), 'value': '2'},
+                {'label': html.Label(['3 units', html.Img(src='assets/size-3.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-top':'-5px'})]), 'value': '3'},
+                {'label': html.Label(['4 units', html.Img(src='assets/size-4.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-top':'-5px'})]), 'value': '4'},
             ],
             value='2',  # Default selected value
             labelStyle={

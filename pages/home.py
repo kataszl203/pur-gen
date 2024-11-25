@@ -28,16 +28,16 @@ layout = html.Div(
                 className = 'homepage-text-main'),
                 
                 html.A('''PUR-GEN: A Web Server for Automated Generation of Polyurethane Fragment Libraries, 
-                       K. Szleper, O. Kovalenko, A. Góra, A. Raczyńska, 2024 (to be published)''', 
+                       K. Szleper, M. Cebula, O. Kovalenko, A. Góra, A. Raczyńska, 2024 (to be published)''', 
                        className='homepage-publication-link'),
                      #   href='http://www.doi.pl/',className='homepage-publication-link'), #Link of publication to be added
                 html.Img(src='assets/graphical-abstract.png',#'assets/abstract.png',
-                         style={'width': '40%','margin-top': '10px', 'margin-bottom':'10px'}),
+                         style={'width': '40%','margin-top': '10px', 'margin-bottom':'20px'}),
                          
                 html.H3("Contact Information", className = 'contact-info'),
                 html.H3("Katarzyna Szleper", className = 'email-info'),
                 html.H3("email: k.szleper@tunnelinggroup.pl  katarzyna.szleper@polsl.pl", className = 'email-info'),
-                html.H3("VISIT OUR WEBPAGE!", className = 'tg-info'),
+                html.H3("VISIT OUR WEBPAGE:", className = 'tg-info'),
                 html.A("Tunneling Group", href='http://www.tunnelinggroup.pl/', 
                        title = 'http://www.tunnelinggroup.pl/', className = 'tg-link'),
                      html.Br()

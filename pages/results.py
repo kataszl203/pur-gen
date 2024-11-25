@@ -127,8 +127,11 @@ modal2 = dbc.Modal(
                                                 'alignItem': 'left',
                                             })
                                     ]),]),
-                                    dbc.Row([html.H5("Generation of conformers may take longer, especially with numerous compounds.",
-                                            className='run-select-info-text2', ),]),
+                                    dbc.Row(
+                                        # [html.H5("Generation of conformers may take longer, especially with numerous compounds.",
+                                            # className='run-select-info-text2', ),]
+                                            [html.Div(f"This website uses Open Babel to generate up to 20 conformers. Due to its limitations, larger or more complex compounds from PUR-GEN may produce fewer conformers, sometimes only one structure. If needed, we recommend trying other conformer generation tools, such as : ", className="box"),
+                                            html.A('Mobyle@RPBS', href='https://mobyle2.rpbs.univ-paris-diderot.fr/', target='_blank', className="link-box")]),
                                     dbc.Row([html.Div(style={'margin-bottom': '10px'}, children=[
                                         dcc.Loading(
                                             id='loading-csv',

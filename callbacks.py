@@ -130,8 +130,8 @@ def show_reactions(smiles, size_value, capping_group=None):
         html.Button('DOWNLOAD GENERATED DATA', id='download-generated-data', n_clicks=0, style={
             'width': '500px', "margin-top": "20px"
         }),
-        html.Div(f"This website uses Open Babel to generate up to 20 conformers. However, due to its limitations, larger or more complex compounds from PUR-GEN may produce fewer conformers, sometimes only one structure. If needed, we recommend trying other conformer generation tools, such as : ", className="box"),
-        html.A('Mobyle@RPBS', href='https://mobyle2.rpbs.univ-paris-diderot.fr/', target='_blank', className="link-box")
+        # html.Div(f"This website uses Open Babel to generate up to 20 conformers. However, due to its limitations, larger or more complex compounds from PUR-GEN may produce fewer conformers, sometimes only one structure. If needed, we recommend trying other conformer generation tools, such as : ", className="box"),
+        # html.A('Mobyle@RPBS', href='https://mobyle2.rpbs.univ-paris-diderot.fr/', target='_blank', className="link-box")
     ], className='summary-text')
     
     structures_imgs = [html.Div(products_imgs)]
