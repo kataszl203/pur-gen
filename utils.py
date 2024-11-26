@@ -126,13 +126,13 @@ def prepare_reaction(smiles):
         if comp.HasSubstructMatch(iso_pattern):
             if comp.HasSubstructMatch(diiso_pattern):
                 if comp.HasSubstructMatch(triiso_pattern):
-                    comp.SetProp('func_group', 'diiso')
+                    comp.SetProp('func_group', 'diisocyanate')
                     comp.SetProp('poly_func', 'triiso')
                 else:
-                    comp.SetProp('func_group', 'diiso')
+                    comp.SetProp('func_group', 'diisocyanate')
                 n_diiso += 1
             else:
-                comp.SetProp('func_group', 'iso')
+                comp.SetProp('func_group', 'isocyanate')
                 n_iso += 1
             iso_mols.append(comp)
             n_all_classified += 1
@@ -189,21 +189,21 @@ def perform_trimerization(a_list, b_list):
             rxn1 = rdChemReactions.ReactionFromSmarts(reaction1)
             rxn2 = rdChemReactions.ReactionFromSmarts(reaction2)
                 
-            if a.GetProp('func_group') == 'iso' and b.GetProp('func_group') == 'diol':
+            if a.GetProp('func_group') == 'isocyanate' and b.GetProp('func_group') == 'diol':
                 products = rxn2.RunReactants(reacts2)
                 products_list.append(products[0][0])
                 reagents_smiles.append(
                     [Chem.MolToSmiles(reacts2[0]), Chem.MolToSmiles(reacts2[1]), Chem.MolToSmiles(reacts2[2])])
                 products_smiles.append(Chem.MolToSmiles(products[0][0]))
 
-            elif a.GetProp('func_group') == 'diiso' and b.GetProp('func_group') == 'ol':
+            elif a.GetProp('func_group') == 'diisocyanate' and b.GetProp('func_group') == 'ol':
                 products = rxn1.RunReactants(reacts1)
                 products_list.append(products[0][0])
                 reagents_smiles.append(
                     [Chem.MolToSmiles(reacts1[0]), Chem.MolToSmiles(reacts1[1]), Chem.MolToSmiles(reacts1[2])])
                 products_smiles.append(Chem.MolToSmiles(products[0][0]))
             
-            elif a.GetProp('func_group') == 'diiso' and b.GetProp('func_group') == 'diol':
+            elif a.GetProp('func_group') == 'diisocyanate' and b.GetProp('func_group') == 'diol':
                 products1 = rxn1.RunReactants(reacts1)
                 products_list.append(products1[0][0])
                 reagents_smiles.append(
@@ -226,7 +226,7 @@ def perform_tetramerization(a_list, b_list):
     products_list = []
 
     for a in a_list:
-        if a.GetProp('func_group') == 'diiso':
+        if a.GetProp('func_group') == 'diisocyanate':
             for b in b_list:
                 if b.GetProp('func_group') == 'diol':
                     reaction = abab

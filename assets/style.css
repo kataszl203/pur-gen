@@ -16,12 +16,12 @@ button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
-  padding: 0 30px;
+  padding: 5px ;
   color: #555;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 38px;
+  line-height: 30px;
   letter-spacing: .1rem;
   text-transform: uppercase;
   text-decoration: none;
@@ -32,7 +32,8 @@ input[type="button"] {
   cursor: pointer;
   box-sizing: border-box;
   margin-left: 20px;
-  margin-right: 20px; }
+  margin-right: 20px; 
+}
 .button:hover,
 button:hover,
 input[type="submit"]:hover,
@@ -117,6 +118,7 @@ input[type="button"].button-primary:focus {
   margin-top: 50px;
   margin-bottom: 20px;
   text-align: center;
+  font-size: 20px;
 }
 
 .results-properties-description {
@@ -124,6 +126,7 @@ input[type="button"].button-primary:focus {
   max-width: 80%;
   color: #3b3b3b;
   text-align: center;
+  font-size: 16px
 }
 
 .homepage-text {
@@ -187,9 +190,9 @@ input[type="button"].button-primary:focus {
 
 .homepage-publication-link {
   color: #361870;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 14px;
+  line-height: 16px;
   letter-spacing: .1rem;
   text-decoration: none;
   font-weight: normal;
@@ -213,7 +216,8 @@ input[type="button"].button-primary:focus {
   text-decoration: none;
   white-space: nowrap;
   text-align: center;
-  margin-bottom: -5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   opacity: 0.6;
 }
 
@@ -236,7 +240,7 @@ input[type="button"].button-primary:focus {
 }
 
 .tg-info {
-  color: #5b5d74;
+  color: #5b5d74; 
   font-size: 14px;
   font-weight: bold;
   line-height: 14px;
@@ -250,7 +254,7 @@ input[type="button"].button-primary:focus {
 }
 
 .tg-link {
-  color: #5b5d74;
+  color: #6d5b9d;
   font-size: 18px;
   font-weight: normal;
   line-height: 18px;
@@ -260,6 +264,24 @@ input[type="button"].button-primary:focus {
   display: flex;
   justify-content: center;
   align-items: center
+}
+
+.tg-link:link {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.tg-link:hover {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.tg-link:active {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
 }
 
 .how-to-use-font {
@@ -286,6 +308,7 @@ input[type="button"].button-primary:focus {
 
 .highlighted-left-text {
   font-weight: 200;
+  font-size: 20px;
   letter-spacing: .1rem;
   margin-top: 30px;
   margin-bottom: 50px;
@@ -299,8 +322,21 @@ input[type="button"].button-primary:focus {
   font-weight: 200;
   letter-spacing: .1rem;
   margin-top: 30px;
+  font-size: 20px;
   margin-bottom: 50px;
   margin-left:20px;
+  color: #737373;
+  text-align: left;
+  text-transform: uppercase;
+  text-shadow: 1.2px 1.2px #919191;
+}
+
+.highlighted-left-text-margin-2 {
+  font-weight: 200;
+  letter-spacing: .1rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left:5px;
   color: #737373;
   text-align: left;
   text-transform: uppercase;
@@ -337,11 +373,13 @@ input[type="button"].button-primary:focus {
   color: #737373;
   line-height: 30px;
   max-width: 70%;
+  font-size: 20px;
 }
 
 
 .run-select-text {
   font-weight: normal;
+  font-size: 18px;
   margin-top: 20px;
   margin-bottom: 20px;
   color: black
@@ -350,9 +388,28 @@ input[type="button"].button-primary:focus {
 .run-select-info-text {
   font-weight: normal;
   color: gray;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.run-select-info-text2 {
+  font-weight: normal;
+  text-align: justify;
+  color: gray;
   margin-left: 20px;
   margin-top: 5px;
   margin-bottom: 15px
+}
+
+.run-char-count-text {
+  font-weight: bold;
+  font-size: 12px;
+  color: #979696;
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: end;
 }
 
 .run-left-panel-layout {
@@ -367,7 +424,7 @@ input[type="button"].button-primary:focus {
   margin-bottom: 10px; 
   margin-left: 10px;
   color: gray;
-  font-weight: 600;
+  font-size: 18px;
   line-height: 25px;
   letter-spacing: .1rem;
   text-decoration: none;
@@ -388,6 +445,49 @@ input[type="button"].button-primary:focus {
   cursor: pointer;
 }
 
+.upload-component-text {
+  width: 99%;
+  height: 300px;
+  color: gray;
+  line-height: 15px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: lightgray;
+  background-color: white;
+  border-radius: 5px;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /*cursor: pointer;*/
+}
+
+.upload-component-text:focus {
+  border-color: #b292f3;
+  outline: none;
+}
+
+.upload-component-text-log {
+  width: 99%;
+  height: 100px;
+  color: gray;
+  line-height: 15px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: lightgray;
+  background-color: white;
+  border-radius: 5px;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /*cursor: pointer;*/
+}
+.upload-component-text-log:focus {
+  outline: none;
+  /*cursor: pointer;*/
+}
+
 .successful-upload {
   color: gray;
   margin-top: -15px;
@@ -405,7 +505,7 @@ input[type="button"].button-primary:focus {
 .reactants-image {
   height: 150px;
   width:auto;
-  margin: 10
+  margin: 10px
 }
 
 .arrow-image {
@@ -453,4 +553,72 @@ input[type="button"].button-primary:focus {
     flex-wrap: wrap;
     justify-content: flex-start;
     margin-top: 20px
+}
+
+.radio_style{
+  appearance: none;
+  -webkit-appearance: none;
+
+  /* For a circular appearance we need a border-radius. */
+  border-radius: 50%;
+
+  /* The background will be the radio dot's color. */
+  background: #b292f3;
+
+  /* The border will be the spacing between the dot and the outer circle */
+  border: 5px solid #FFF;
+
+  /* And by creating a box-shadow with no offset and no blur, we have an outer circle */
+  box-shadow: 0 0 0 1px #b292f3;
+}
+
+.box {
+  line-height: 12px;
+  margin-left: 40px;
+  margin-right: 10px;
+  display: block;
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  text-align: justify;
+  width: 90%;
+}
+
+.link-box {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+  line-height: 16px;
+  margin-left: 20px;
+  margin-right: 10px;
+  display: inline-block;
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 2px;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  text-align: center;
+  width: 90%;
+}
+
+.link-box:link {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.link-box:hover {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.link-box:active {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
 }
