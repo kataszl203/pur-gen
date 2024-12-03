@@ -15,6 +15,72 @@ dash.register_page(__name__,
                    title='results PUR-GEN',
                    name='results PUR-GEN',
                    image='assets/logo.png')
+
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "Home",
+                color="primary",
+                href="/",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "How to Use",
+                href="/how-to-use",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+
+# Navbar layout with logo and toggler
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Button(
+                            "< Back to selection",
+                            href="/run",
+                            color="primary",
+                            className='button',  # Single 'button' class for CSS
+                            n_clicks=0
+                        ),
+                        className="me-auto",  # Push image to the far left
+                    ),
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler2", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse2",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+)
+
+
 columnDefs_temp = [
         {"field": "Compound", "headerName": "INDEX", 'cellDataType': 'number'},
         {"field": "SMILES", },
@@ -205,8 +271,8 @@ layout = dcc.Loading(
     delay_hide=500,
     #fullscreen=True,
     children=html.Div(id='results-page', style={'display': 'block'}, children=[
-        modal2,
-        html.Center(style={'alignItems': 'center', 'background-color': '#F0F0F0', 'margin-top': '20px'},
+        modal2, navbar,
+        html.Center(style={'alignItems': 'center', 'background-color': '#F0F0F0', },
                     children=[
                         html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className='homepage-logo'), href='/')
                     ]),
@@ -230,14 +296,14 @@ layout = dcc.Loading(
         dbc.Modal(id="img-modal-2", size="md", centered=True,),
             ])
         ]),
-        dcc.Store(id='conformers_generated'),
-        dcc.Store(id='products'),
-        dcc.Store(id='structures-store'),
+        dcc.Store(id='conformers_generated', storage_type='local'),
+        dcc.Store(id='products', storage_type='local'),
+        dcc.Store(id='structures-store', storage_type='local'),
         dcc.Store(id='table-store', storage_type='local'),
         dcc.Store(id='downloadable-rows', storage_type='local'),
         dcc.Store(id='table-store-todownload', storage_type='local'),
         dcc.Store(id='table-store-todownload-final', storage_type='local'),
-        dcc.Store(id='fig-store'),
+        dcc.Store(id='fig-store', storage_type='local'),
         html.H1('GENERATED PUR FRAGMENTS', className='highlighted-center-text'),
         dcc.Tabs(id="tabs", value='tab-structures', children=[
             dcc.Tab(label='PUR structures', value='tab-structures', selected_style={
@@ -520,3 +586,15 @@ def show_change3(data):
     if data:
         return True, html.Img(src='data:image/jpeg;base64,' + data["value"])
     return False, None
+
+
+
+@callback(
+    Output("navbar-collapse2", "is_open"),
+    [Input("navbar-toggler2", "n_clicks")],
+    [State("navbar-collapse2", "is_open")],
+)
+def toggle_navbar_collapse2(n, is_open):
+    if n:
+        return not is_open
+    return is_open

@@ -622,3 +622,82 @@ input[type="button"].button-primary:focus {
   background-color: transparent;
   text-decoration: underline;
 }
+
+.button-row .col {
+    margin-right: 10px; /* Control spacing between buttons */
+    margin-left: 0;
+}
+
+.button-row .col:last-child {
+    margin-right: 0; /* Remove margin after the last button */
+    margin-left: 0;
+}
+
+
+.navbar-dark {
+    color: #F0F0F0 !important; /* Light gray text */
+    background-color: #F0F0F0 !important; /* Light gray background */
+    padding: 0.5rem 1rem;
+}
+
+/* Button styles */
+.navbar-dark .button {
+    color: #4c4062;
+    background-color: #F0F0F0; /* Primary background color */
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    border: none; /* No border by default */
+}
+
+/* Button hover effects */
+.navbar-dark .button:hover {
+    background-color: #d4d1d1; /* Slightly darker blue */
+    color: #a389d6;
+}
+
+/* Button active state */
+.navbar-dark .button:active {
+    color: #4c4062;
+    background-color: #d2befb; /* Primary blue */
+}
+
+/* Logo alignment */
+.logo-link {
+    display: inline-block; /* Ensure link wraps only the image */
+    margin-right: auto;
+}
+
+.logo-link img {
+    display: block; /* Remove inline spacing around the image */
+}
+
+/* Row spacing */
+.navbar .g-0 {
+    gap: 1rem; /* Add spacing between buttons */
+    margin-right: 1rem; /* Add a small margin to buttons */
+}
+
+
+/* Adjustments for responsive screens */
+@media (max-width: 768px) {
+    .navbar-dark .button {
+        font-size: 0.9rem; /* Smaller font size on small screens */
+        padding: 0.4rem 0.8rem; /* Adjust padding */
+    }
+
+    .navbar-dark .navbar-brand img {
+        max-height: 40px; /* Smaller logo for smaller screens */
+    }
+
+    .navbar-dark .navbar-toggler {
+
+        background-color: transparent; /* Ensure toggler blends with the background */
+    }
+
+    .navbar-dark .navbar-toggler-icon {
+         background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath fill='%234c4062' d='M0 6h30v2H0zm0 7h30v2H0zm0 7h30v2H0z'/%3E%3C/svg%3E");
+    /* You can also change this to a different color to suit your design */
+    }
+}

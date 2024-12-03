@@ -18,6 +18,62 @@ dash.register_page(__name__,
                    name='run PUR-GEN',
                    image='assets/logo.png')
 
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "Home",
+                color="primary",
+                href="/",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "How to Use",
+                href="/how-to-use",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+
+# Navbar layout with logo and toggler
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+)
+
+
 # Read the compounds
 isocyanate_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/isocyanates.txt", "r").read().splitlines()]
 hydroxyl_list = [{'label' : i.split(";")[0], 'smiles' : i.split(";")[1]} for i in open("data/poliols.txt", "r").read().splitlines()]
@@ -56,8 +112,11 @@ isocyanate_table = dag.AgGrid(
         # "domLayout": "autoHeight"
 
     },
-    columnSize="autoSize",
-    columnSizeOptions={"keys": ["picture", "label"]}
+    persistence=True,
+    persistence_type='local',
+    persisted_props=['value', 'selectedRows'],
+    columnSize="sizeToFit",
+    #columnSizeOptions={"keys": ["picture", "label"]}
 )
 hydroxyl_table = dag.AgGrid(
     id="hydroxyl-table",
@@ -74,8 +133,11 @@ hydroxyl_table = dag.AgGrid(
         # "domLayout": "autoHeight"
 
     },
-    columnSize="autoSize",
-    columnSizeOptions={"keys": ["picture", "label"]}
+    persistence=True,
+    persistence_type='local',
+    persisted_props=['value', 'selectedRows'],
+    columnSize="sizeToFit",
+    #columnSizeOptions={"keys": ["picture", "label"]}
 )
 
 modal = dbc.Modal(
@@ -91,15 +153,17 @@ modal = dbc.Modal(
     fullscreen=True,  # This makes the modal full screen
 )
 
-layout = html.Div(style={'display': 'flex'},
+layout = html.Div([
+navbar,
+html.Div(style={'display': 'flex'},
     children=[modal,
         html.Div(id = 'left-panel-content',className='run-left-panel-layout',
                        children = [
 
-    html.Div(id = 'left-panel-header',
-            children = [html.A(html.Img(src='assets/pur-gen_tg_short_logo.png', 
-                                    style={'max-width': '85%', 
-                                           'height': 'auto'}), 
+   html.Div(id = 'left-panel-header',
+            children = [html.A(html.Img(src='assets/pur-gen_tg_short_logo.png',
+                                    style={'max-width': '85%',
+                                           'height': 'auto'}),
                                     href='/'),]),
     html.Div(id = 'left-panel-before-reaction',
             children = [html.H3("SELECT SUBSTRATES",className='run-select-text'),
@@ -110,21 +174,21 @@ layout = html.Div(style={'display': 'flex'},
                         layouts.create_switch_with_label('show alcohols','switch-hydroxyl','assets/alcohols.png'),
 
                         #layouts.create_upload_component(),
-                        dcc.Store(id='store-substrates'),
+                        dcc.Store(id='store-substrates', storage_type='local'),
                         layouts.create_texarea_component(),
                         layouts.create_select_size_component(),
                         layouts.create_capping_group_component(),
 
                         html.Div([dcc.Link(html.Button("RUN",
                             className='button button',
-                            n_clicks=0),id='make-oligomers-button',href='')], 
-                            style = {'display':'flex', 
+                            n_clicks=0),id='make-oligomers-button',href='')],
+                            style = {'display':'flex',
                                      'justify-content': 'center',
                                      'margin-top':'50px',
                                      'margin-bottom':'50px'})]),
-                        dcc.Store(id="custom-compounds"),
-                        dcc.Store(id='store-reaction'),
-                       dcc.Store(id='store-text-input')]),
+                        dcc.Store(id="custom-compounds", storage_type='local'),
+                        dcc.Store(id='store-reaction', storage_type='local'),
+                       dcc.Store(id='store-text-input', storage_type='local')]),
               html.Div([
                   html.Div(id = 'right-panel-content',
                            children = [#layouts.create_checkbox_list(isocyanate_list, isocyanate_all, "Select isocyanates: ", 'isocyanate-list', 'select-all-isocyanate', 'isocyanate-list-checkbox'),
@@ -148,6 +212,7 @@ layout = html.Div(style={'display': 'flex'},
                            style={})],
                        style={'flex': '2'}),
               ])
+])
 
 @callback(Output('upload-substrates-textarea', 'value'),
           Output('sample-input-button', 'n_clicks'),
@@ -354,3 +419,14 @@ def show_change_alcohol(data):
     if data:
         return True, html.Img(src='data:image/jpeg;base64,' + data["value"])
     return False, None
+
+
+@callback(
+    Output("navbar-collapse", "is_open"),
+    [Input("navbar-toggler", "n_clicks")],
+    [State("navbar-collapse", "is_open")],
+)
+def toggle_navbar_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open

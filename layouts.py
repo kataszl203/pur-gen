@@ -90,7 +90,10 @@ def create_texarea_component():
             spellCheck=False,
             draggable=False,
             wrap=False,
-            maxLength=2000
+            maxLength=2000,
+            persistence=True,
+            persistence_type='local',
+            persisted_props=['value']
         ),])
         ], justify='center', align='stretch'),
         dbc.Row([
