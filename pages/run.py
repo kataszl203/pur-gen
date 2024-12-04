@@ -233,7 +233,7 @@ def insert_sample_input(n_clicks, nclicks2):
     text_input: str = ""
 
     if n_clicks > 0:
-        with open('static/sample_input.txt', 'r') as f:
+        with open('static/sample_input_v2.txt', 'r') as f:
             text_input = f.read()
 
     return text_input, 0
