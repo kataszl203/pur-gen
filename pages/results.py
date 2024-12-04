@@ -15,6 +15,84 @@ dash.register_page(__name__,
                    title='results PUR-GEN',
                    name='results PUR-GEN',
                    image='assets/logo.png')
+
+
+warning = dbc.Modal(
+            [
+                dbc.ModalHeader(dbc.ModalTitle("Please select at least one substrate!")),
+                dbc.ModalBody("In order to download requested data, please select at least one substrate from the table on the right. \nIf you have already selected, please unselect and select again."),
+            ],
+            id="warning-download-modal",
+            is_open=False,
+            centered=True,
+        )
+
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "Home",
+                color="primary",
+                href="/",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "How to Use",
+                href="/how-to-use",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+
+# Navbar layout with logo and toggler
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Button(
+                            "< Back to selection",
+                            href="/run",
+                            color="primary",
+                            className='button',  # Single 'button' class for CSS
+                            n_clicks=0
+                        ),
+                        className="me-auto",  # Push image to the far left
+                    ),
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler2", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse2",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+    fixed="top",
+)
+
+
 columnDefs_temp = [
         {"field": "Compound", "headerName": "INDEX", 'cellDataType': 'number'},
         {"field": "SMILES", },
@@ -86,6 +164,7 @@ modal2 = dbc.Modal(
     [
         dbc.ModalHeader([html.H3('DOWNLOAD RESULTS', className='highlighted-left-text-margin-2'),]),
         dbc.ModalBody([
+                warning,
                 html.Div(className='results-buttons', children=[
                     dbc.Row([
                         dbc.Col(
@@ -179,16 +258,14 @@ modal2 = dbc.Modal(
                             ], width={"size": 7, "order": "last", "offset": 1},
                         ),
                     ]),
-                    html.Div(id="selected-rows-output")
+
                 ],
                          style={
                              #'width': '420px'
                          })
             ]),
         dbc.ModalFooter(
-            html.Button('Close', id='close-modal2', n_clicks=0, style={
-                                            'width': '200px'
-                                        }),
+            html.Div(id="selected-rows-output")
         ),
     ],
     id="fullscreen-modal-1",
@@ -205,8 +282,8 @@ layout = dcc.Loading(
     delay_hide=500,
     #fullscreen=True,
     children=html.Div(id='results-page', style={'display': 'block'}, children=[
-        modal2,
-        html.Center(style={'alignItems': 'center', 'background-color': '#F0F0F0', 'margin-top': '20px'},
+        modal2, navbar,
+        html.Center(style={'alignItems': 'center', 'background-color': '#F0F0F0',  'margin-top': '60px'},
                     children=[
                         html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className='homepage-logo'), href='/')
                     ]),
@@ -230,14 +307,14 @@ layout = dcc.Loading(
         dbc.Modal(id="img-modal-2", size="md", centered=True,),
             ])
         ]),
-        dcc.Store(id='conformers_generated'),
-        dcc.Store(id='products'),
-        dcc.Store(id='structures-store'),
+        dcc.Store(id='conformers_generated', storage_type='local'),
+        dcc.Store(id='products', storage_type='local'),
+        dcc.Store(id='structures-store', storage_type='local'),
         dcc.Store(id='table-store', storage_type='local'),
         dcc.Store(id='downloadable-rows', storage_type='local'),
         dcc.Store(id='table-store-todownload', storage_type='local'),
         dcc.Store(id='table-store-todownload-final', storage_type='local'),
-        dcc.Store(id='fig-store'),
+        dcc.Store(id='fig-store', storage_type='local'),
         html.H1('GENERATED PUR FRAGMENTS', className='highlighted-center-text'),
         dcc.Tabs(id="tabs", value='tab-structures', children=[
             dcc.Tab(label='PUR structures', value='tab-structures', selected_style={
@@ -344,6 +421,7 @@ def init_download_substrates(stored_substrates):
     Output("selected-rows-output", "children"),  # Output to display selected rows
     Output("downloadable-rows", "data"),
     Input("grid-cell-loaded-components-download-results", "selectedRows"),  # Input to monitor row selection
+    prevent_initial_call=True
 )
 def display_selected_rows(selected_rows):
     if not selected_rows:
@@ -481,13 +559,13 @@ def download_conformers(n_clicks, conformers_content):
 
 @callback(
     Output("fullscreen-modal-1", "is_open"),
-    [Input('download-generated-data', 'n_clicks'), Input("close-modal2", "n_clicks")],
+    [Input('download-generated-data', 'n_clicks')],
     [State("fullscreen-modal-1", "is_open")],
 prevent_initial_call=True,
     surpress_callback_exceptions=True
 )
-def toggle_modal(load_clicks, close_clicks, is_open):
-    if load_clicks or close_clicks:
+def toggle_modal(load_clicks, is_open):
+    if load_clicks:
         return not is_open
     return is_open
 
@@ -520,3 +598,29 @@ def show_change3(data):
     if data:
         return True, html.Img(src='data:image/jpeg;base64,' + data["value"])
     return False, None
+
+
+
+@callback(
+    Output("navbar-collapse2", "is_open"),
+    [Input("navbar-toggler2", "n_clicks")],
+    [State("navbar-collapse2", "is_open")],
+)
+def toggle_navbar_collapse2(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+@callback(
+    Output("warning-download-modal", "is_open"),
+    [Input('generate-2d', 'n_clicks'),
+     Input('generate-3d', 'n_clicks'),
+     Input('generate-conformers', 'n_clicks'),
+     Input('generate-csv', 'n_clicks'),
+     ],
+    [State("grid-cell-loaded-components-download-results", "selectedRows")],
+    prevent_initial_call=True)
+def show_warning_modal(nclicks_2d, nclicks_3d, nclicks_conf, nclicks_csv, data):
+    if not data:
+        return True
+    return False

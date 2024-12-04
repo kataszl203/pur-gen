@@ -1,5 +1,6 @@
 import dash
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 dash.register_page(__name__, 
                    path='/',
@@ -7,13 +8,66 @@ dash.register_page(__name__,
                    name='PUR-GEN',
                    image='assets/logo.png')
 
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "Home",
+                color="primary",
+                href="/",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "How to Use",
+                href="/how-to-use",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+    fixed="top",
+)
 # Define layout for the home page
 layout = html.Div(
     className='home-page-style',
-    children = [html.Center(style = {'alignItems': 'center'},
+    children = [navbar, html.Center(style = {'alignItems': 'center', 'margin-top': '60px'},
     children = [html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/'),
                 html.Div(className='header-buttons',children=[
-                dcc.Link(html.Button('HOW TO USE'), href='/how-to-use'),
+                #dcc.Link(html.Button('HOW TO USE'), href='/how-to-use'),
                 dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
 
                 html.H3('''PUR-GEN is a chemoinformatics online tool, 

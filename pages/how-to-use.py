@@ -1,5 +1,6 @@
 import dash
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 dash.register_page(__name__, 
                    path='/how-to-use',
@@ -7,13 +8,67 @@ dash.register_page(__name__,
                    name='how to use PUR-GEN',
                    image='assets/logo.png')
 
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "Home",
+                color="primary",
+                href="/",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "How to Use",
+                href="/how-to-use",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+    fixed="top",
+)
+
 # Define layout for the "How to Use" page
-layout = html.Center(style = {'display': 'block','alignItems': 'center',},
-    children = [
+layout = html.Center(style = {'display': 'block','alignItems': 'center', 'margin-top': '60px'},
+    children = [navbar,
         html.Center(className='how-to-use-page-header',children = [
             html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/',id='top'),
                     html.Div(className='header-buttons',children=[
-                        dcc.Link(html.Button('HOME PAGE'), href='/'),
+                        #dcc.Link(html.Button('HOME PAGE'), href='/'),
                         dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
                     ]),
 
