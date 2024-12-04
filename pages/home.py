@@ -86,7 +86,7 @@ layout = html.Div(
                        K. Szleper, M. Cebula, O. Kovalenko, A. Góra, A. Raczyńska, 2024 (to be published)''', 
                        className='homepage-publication-link'),
                      #   href='http://www.doi.pl/',className='homepage-publication-link'), #Link of publication to be added
-                html.Img(src='assets/graphical-abstract.png',#'assets/abstract.png',
+                html.Img(src='assets/graphical-abstract-v2.png',#'assets/abstract.png',
                          style={'width': '40%','margin-top': '10px', 'margin-bottom':'20px'}),
                          
                 html.H3("Contact Information", className = 'contact-info'),

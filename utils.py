@@ -146,7 +146,7 @@ def prepare_reaction(smiles):
                     comp.SetProp('func_group', 'diol')
                 n_diol += 1
             else:
-                comp.SetProp('func_group', 'ol')
+                comp.SetProp('func_group', 'monohydroxy alcohol')
                 n_ol += 1
             poliol_mols.append(comp)
             n_all_classified += 1
@@ -196,7 +196,7 @@ def perform_trimerization(a_list, b_list):
                     [Chem.MolToSmiles(reacts2[0]), Chem.MolToSmiles(reacts2[1]), Chem.MolToSmiles(reacts2[2])])
                 products_smiles.append(Chem.MolToSmiles(products[0][0]))
 
-            elif a.GetProp('func_group') == 'diisocyanate' and b.GetProp('func_group') == 'ol':
+            elif a.GetProp('func_group') == 'diisocyanate' and b.GetProp('func_group') == 'monohydroxy alcohol':
                 products = rxn1.RunReactants(reacts1)
                 products_list.append(products[0][0])
                 reagents_smiles.append(

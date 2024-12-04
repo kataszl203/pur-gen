@@ -1,2 +1,0 @@
-Name;SMILES
-butanoic acid;CCCC(=O)O

@@ -1,7 +1,0 @@
-pentanol;CCCCCCCO
-butoxy butanol;CCCCOCCCCO
-1-tert-Butoxy-2-propanol;CC(O)COC(C)(C)C
-dodecylisocyanate;CCCCCCCCCCCCN=C=O
-isopropylisocyanate;CC(C)N=C=O
-toluene-2,4,6-triyl triisocyanate;Cc1c(N=C=O)cc(N=C=O)cc1N=C=O
-butano-1,2,4-triol;OCCC(O)CO
