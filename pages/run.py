@@ -184,14 +184,13 @@ html.Div(style={'display': 'flex', 'margin-top': '60px'},
                         layouts.create_switch_with_label('show isocyanates','switch-isocyanate','assets/isocyanates.png'),
 
                         layouts.create_switch_with_label('show alcohols','switch-hydroxyl','assets/alcohols.png'),
-
                         #layouts.create_upload_component(),
                         dcc.Store(id='store-substrates', storage_type='local'),
                         layouts.create_texarea_component(),
                         layouts.create_select_size_component(),
                         layouts.create_capping_group_component(),
 
-                        html.Div([dcc.Link(html.Button("CALCULATE SUBSTRATES",
+                        html.Div([dcc.Link(html.Button("CALCULATE PRODUCTS",
                             className='button button',
                             n_clicks=0, id="run-button"),id='make-oligomers-button',href='')],
                             style = {'display':'flex',
@@ -235,7 +234,7 @@ def insert_sample_input(n_clicks, nclicks2):
     text_input: str = ""
 
     if n_clicks > 0:
-        with open('static/sample_input.txt', 'r') as f:
+        with open('static/sample_input_v2.txt', 'r') as f:
             text_input = f.read()
 
     return text_input, 0

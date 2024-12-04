@@ -12,9 +12,9 @@ buttons = dbc.Row(
     [
         dbc.Col(
             dbc.Button(
-                "Home",
+                "RUN PUR-GEN",
                 color="primary",
-                href="/",
+                href="/run",
                 className='button',  # Single 'button' class for CSS
                 n_clicks=0
             ),
@@ -68,7 +68,8 @@ layout = html.Div(
     children = [html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/'),
                 html.Div(className='header-buttons',children=[
                 #dcc.Link(html.Button('HOW TO USE'), href='/how-to-use'),
-                dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
+                # dcc.Link(html.Button('RUN PUR-GEN'), href='/run')
+                ]),
 
                 html.H3('''PUR-GEN is a chemoinformatics online tool, 
                         which generates single structures or libraries 
@@ -85,7 +86,7 @@ layout = html.Div(
                        K. Szleper, M. Cebula, O. Kovalenko, A. Góra, A. Raczyńska, 2024 (to be published)''', 
                        className='homepage-publication-link'),
                      #   href='http://www.doi.pl/',className='homepage-publication-link'), #Link of publication to be added
-                html.Img(src='assets/graphical-abstract.png',#'assets/abstract.png',
+                html.Img(src='assets/graphical-abstract-v2.png',#'assets/abstract.png',
                          style={'width': '40%','margin-top': '10px', 'margin-bottom':'20px'}),
                          
                 html.H3("Contact Information", className = 'contact-info'),

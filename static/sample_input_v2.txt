@@ -1,5 +1,6 @@
+Name;SMILES
 pentanol;CCCCCCCO
 butoxy butanol;CCCCOCCCCO
-1-tert-Butoxy-2-propanol;CC(O)COC(C)(C)C
+1-tert-butoxy-2-propanol;CC(O)COC(C)(C)C
 dodecylisocyanate;CCCCCCCCCCCCN=C=O
 isopropylisocyanate;CC(C)N=C=O
