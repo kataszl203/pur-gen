@@ -69,7 +69,8 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center', 'margin
             html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/',id='top'),
                     html.Div(className='header-buttons',children=[
                         #dcc.Link(html.Button('HOME PAGE'), href='/'),
-                        dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
+                        # dcc.Link(html.Button('RUN PUR-GEN'), href='/run')
+                        ]),
                     ]),
 
     html.H2("HOW IT WORKS?", className = 'highlighted-center-text'),
