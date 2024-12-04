@@ -12,9 +12,9 @@ buttons = dbc.Row(
     [
         dbc.Col(
             dbc.Button(
-                "Home",
+                "RUN PUR-GEN",
                 color="primary",
-                href="/",
+                href="/run",
                 className='button',  # Single 'button' class for CSS
                 n_clicks=0
             ),
@@ -22,8 +22,8 @@ buttons = dbc.Row(
         ),
         dbc.Col(
             dbc.Button(
-                "How to Use",
-                href="/how-to-use",
+                "HOME",
+                href="/",
                 color="primary",
                 className='button',  # Single 'button' class for CSS
                 n_clicks=0
