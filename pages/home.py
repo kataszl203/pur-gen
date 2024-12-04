@@ -12,9 +12,9 @@ buttons = dbc.Row(
     [
         dbc.Col(
             dbc.Button(
-                "Home",
+                "RUN PUR-GEN",
                 color="primary",
-                href="/",
+                href="/run",
                 className='button',  # Single 'button' class for CSS
                 n_clicks=0
             ),
@@ -68,7 +68,8 @@ layout = html.Div(
     children = [html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/'),
                 html.Div(className='header-buttons',children=[
                 #dcc.Link(html.Button('HOW TO USE'), href='/how-to-use'),
-                dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
+                # dcc.Link(html.Button('RUN PUR-GEN'), href='/run')
+                ]),
 
                 html.H3('''PUR-GEN is a chemoinformatics online tool, 
                         which generates single structures or libraries 

@@ -78,7 +78,7 @@ def create_texarea_component():
             dbc.Col([html.Div('test', id="character_count_indicator", style={"text-align": "right"}),
                      dcc.Textarea(
             id='upload-substrates-textarea',
-            placeholder="Enter your own input...",
+            placeholder="Enter your own input isocyanates and alcohols...",
             className='upload-component-text',
             style={
                 'width': '100%',
@@ -109,13 +109,13 @@ def create_texarea_component():
                 'margin-right': '0px',
             }), href="https://www.cheminfo.org/flavor/malaria/Utilities/SMILES_generator___checker/index.html", target="_blank"), ], sm=6),
         ], justify='between', align='stretch'),
-        dbc.Row([dbc.Col([html.Button('CLEAR', id='clear-text-input-button', n_clicks=0, style={
+        dbc.Row([dbc.Col([html.Button('CLEAR INPUT', id='clear-text-input-button', n_clicks=0, style={
             'width': '100%',
             "margin-top": "5px",
             'margin-left': '0px',
             'margin-right': '0px',
         }), ], ), ], justify='center', align='stretch'),
-        dbc.Row([dbc.Col([html.Button('LOAD', id='apply-text-input-button', n_clicks=0, style={
+        dbc.Row([dbc.Col([html.Button('LOAD INPUT', id='apply-text-input-button', n_clicks=0, style={
             'width': '100%',
             "margin-top": "5px",
             'margin-left': '0px',
