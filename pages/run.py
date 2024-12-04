@@ -156,8 +156,9 @@ modal = dbc.Modal(
 
 warning = dbc.Modal(
             [
-                dbc.ModalHeader(dbc.ModalTitle("Please select at least one alcohol and isocyanate!")),
-                dbc.ModalBody("In order to proceed, you need to select at least one alcohol and one isocyanate."),
+                dbc.ModalHeader(dbc.ModalTitle("Please select at least one alcohol and isocyanate!", id="warning-header")),
+                dbc.ModalBody("In order to proceed, you need to select at least one alcohol and one isocyanate.", id="warning-body"),
+                dcc.Store(id="warning-command", storage_type='session'),
             ],
             id="warning-modal",
             is_open=False,
@@ -348,13 +349,15 @@ def load_text_input(nclicks, nclicks_clear, text):
 @callback(Output('grid-cell-loaded-components', 'rowData'),
           Output('make-oligomers-button', 'href'),
 Output('stored-substrates', 'data'),
+          Output("warning-command", "data"),
           Input("custom-compounds", "data"),
           Input("hydroxyl-table", "selectedRows"),
-          Input("isocyanate-table", "selectedRows")
+          Input("isocyanate-table", "selectedRows"),
+        Input('select-size', 'value')
         #Input('isocyanate-list-checkbox', 'value'),
         #Input('hydroxyl-list-checkbox', 'value'),
           )
-def fill_loaded_data(custom_compounds, hydroxyl_checkbox_value, isocyanate_checkbox_value):
+def fill_loaded_data(custom_compounds, hydroxyl_checkbox_value, isocyanate_checkbox_value, size):
     images = []
     substrate_type = []
     substrate_type_custom = []
@@ -417,7 +420,24 @@ def fill_loaded_data(custom_compounds, hydroxyl_checkbox_value, isocyanate_check
         link = ""
     if not poliol_mols_cst and not poliol_mols:
         link = ""
-    return products_df.to_dict('records'), link, smiles
+
+    diols = []
+    diso = []
+    for rd in products_df.to_dict('records'):
+        if rd["substrate_type"] == "diisocyanate":
+            diso.append(rd)
+        elif rd["substrate_type"] == "diol":
+            diols.append(rd)
+    command = ""
+    if size == '3':
+        if not diols and not diso:
+            command = "or"
+            link = ""
+    if size == '4':
+        if not diols or not diso:
+            link = ""
+            command = "and"
+    return products_df.to_dict('records'), link, smiles, command
 
 # Define callback to store size and capping groups
 @callback(Output('stored-size', 'data'),
@@ -485,10 +505,19 @@ def toggle_navbar_collapse(n, is_open):
 
 @callback(
     Output("warning-modal", "is_open"),
+Output("warning-header", "children"),
+Output("warning-body", "children"),
     [Input("run-button", "n_clicks")],
-    [State('make-oligomers-button', 'href')],
+    [State('make-oligomers-button', 'href'), State("warning-command", "data")],
     prevent_initial_call=True)
-def show_warning_modal(nclicks, data):
-    if data == "" and nclicks>0:
-        return True
-    return False
+def show_warning_modal(nclicks, data, command):
+    if nclicks>0:
+        if data == "":
+            if command == "or":
+                return True, "Please select at least one diol or diisocyanate!", "In order to proceed, you need to select at least one diol or one diisocyanate."
+            if command == "and":
+                return True, "Please select at least one diol and diisocyanate!", "In order to proceed, you need to select at least one diol and one diisocyanate."
+            return True, "Please select at least one alcohol and isocyanate!", "In order to proceed, you need to select at least one alcohol and one isocyanate."
+
+    return False, "", ""
+
