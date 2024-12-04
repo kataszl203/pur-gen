@@ -96,6 +96,7 @@ def create_texarea_component():
             persisted_props=['value']
         ),])
         ], justify='center', align='stretch'),
+
         dbc.Row([
             dbc.Col([html.Button('SAMPLE INPUT', id='sample-input-button', n_clicks=0, style={
             'width': '100%',
@@ -108,12 +109,19 @@ def create_texarea_component():
                 'margin-right': '0px',
             }), href="https://www.cheminfo.org/flavor/malaria/Utilities/SMILES_generator___checker/index.html", target="_blank"), ], sm=6),
         ], justify='between', align='stretch'),
+        dbc.Row([dbc.Col([html.Button('CLEAR', id='clear-text-input-button', n_clicks=0, style={
+            'width': '100%',
+            "margin-top": "5px",
+            'margin-left': '0px',
+            'margin-right': '0px',
+        }), ], ), ], justify='center', align='stretch'),
         dbc.Row([dbc.Col([html.Button('LOAD', id='apply-text-input-button', n_clicks=0, style={
             'width': '100%',
             "margin-top": "5px",
             'margin-left': '0px',
             'margin-right': '0px',
         }),], ),], justify='center', align='stretch'),
+
         dbc.Row([
             dbc.Col([
                 dcc.Textarea(
@@ -160,6 +168,7 @@ def create_select_size_component():
                 {'label': html.Label(['4 units', html.Img(src='assets/size-4.png', style={'height': '50px','width': 'auto', 'margin-left':'15px', 'margin-top':'-5px'})]), 'value': '4'},
             ],
             value='2',  # Default selected value
+            persistence='local',
             labelStyle={
                 'display': 'block',
                 'margin-top': '-5px',
@@ -183,7 +192,8 @@ def create_capping_group_component():
         dcc.Dropdown(
             ['-NH2', '-CH3', '-N=C=O', '-NC(=O)OH'],
             placeholder="Select isocyanate capping group",
-            id='capping-group'
+            id='capping-group',
+            persistence='local',
         )])
 
 def create_download_panel():
