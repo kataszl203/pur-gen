@@ -94,7 +94,7 @@ layout = html.Div(
                 html.H3("email: k.szleper@tunnelinggroup.pl  katarzyna.szleper@polsl.pl", className = 'email-info'),
                 html.H3("VISIT OUR WEBPAGE:", className = 'tg-info'),
                 html.A("Tunneling Group", href='http://www.tunnelinggroup.pl/', 
-                       title = 'http://www.tunnelinggroup.pl/', className = 'tg-link'),
+                       title = 'http://www.tunnelinggroup.pl/', className = 'tg-link', target='_blank'),
                      html.Br()
                 ])
 ])
