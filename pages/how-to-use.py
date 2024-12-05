@@ -1,5 +1,6 @@
 import dash
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 dash.register_page(__name__, 
                    path='/how-to-use',
@@ -7,14 +8,69 @@ dash.register_page(__name__,
                    name='how to use PUR-GEN',
                    image='assets/logo.png')
 
+buttons = dbc.Row(
+    [
+        dbc.Col(
+            dbc.Button(
+                "RUN PUR-GEN",
+                color="primary",
+                href="/run",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        ),
+        dbc.Col(
+            dbc.Button(
+                "HOME",
+                href="/",
+                color="primary",
+                className='button',  # Single 'button' class for CSS
+                n_clicks=0
+            ),
+            width="auto",
+        )
+    ],
+    className="button-row flex-nowrap",  # Custom class for styling the button row
+    align="center",
+)
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                        className="d-md-none",  # Show toggler only on smaller screens
+                    ),
+                ],
+                className="g-0 w-100 align-items-center",
+                justify="between",  # Spread image and buttons
+            ),
+            dbc.Collapse(
+                buttons,
+                id="navbar-collapse",
+                is_open=False,
+                navbar=True,
+                className="justify-content-end",  # Align buttons to the far right
+            ),
+        ],
+        fluid=True,  # Allow full-width layout
+    ),
+    className="navbar-dark",
+    fixed="top",
+)
+
 # Define layout for the "How to Use" page
-layout = html.Center(style = {'display': 'block','alignItems': 'center',},
-    children = [
+layout = html.Center(style = {'display': 'block','alignItems': 'center', 'margin-top': '60px'},
+    children = [navbar,
         html.Center(className='how-to-use-page-header',children = [
             html.A(html.Img(src='assets/pur-gen_tg_full_logo.png', className = 'homepage-logo'),href='/',id='top'),
                     html.Div(className='header-buttons',children=[
-                        dcc.Link(html.Button('HOME PAGE'), href='/'),
-                        dcc.Link(html.Button('RUN PUR-GEN'), href='/run')]),
+                        #dcc.Link(html.Button('HOME PAGE'), href='/'),
+                        # dcc.Link(html.Button('RUN PUR-GEN'), href='/run')
+                        ]),
                     ]),
 
     html.H2("HOW IT WORKS?", className = 'highlighted-center-text'),
@@ -27,7 +83,7 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
     
     html.H2("1. SELECT OR UPLOAD SUBSTRATES",className='highlighted-center-smaller-text'),
     
-    html.Div([html.Img(src='assets/substrates.png',
+    html.Div([html.Img(src='assets/substrates-v2.png',
                        style={'max-width': '40%'})],
                        className='how-to-use-image'),
 
@@ -39,21 +95,29 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
             ''', 
             className='center-text'),
 
-    html.Img(src='assets/select-substrates.png', className='how-to-use-screenshot'),
+    html.Img(src='assets/select-substrates-v2.png', className='how-to-use-screenshot'),
 
-    html.H3('''To generate other desired motifs, one can also upload other 
-            substrate structures in SMILES format.''', 
+    html.H3('''To generate other desired motifs, one can also type other 
+            substrate structures in SMILES format. To facilitate SMILES generation for other input structures, user can use linked "SMILES GENERATOR".''', 
             className='center-text'),
-    html.H3('''Input file should be prepared as the following example:''', 
+    html.H3('''Input text should be prepared as the following example:''', 
             className='center-text'),
 
-    html.Img(src='assets/test-input.png', className='how-to-use-screenshot-no-border'),
+    html.Img(src='assets/test-input-v2.png', className='how-to-use-screenshot'),
+
+    html.H3('''After selecting isocyanates and alcohols from the list and loading additional input compounds, all substrates are summarised in a table:''', 
+            className='center-text'),
+
+    html.Img(src='assets/selected-substrates.png', className='how-to-use-screenshot'),
+
+    html.H3('''To generate PUR fragments at least one isocyanate and one alcohol should be selected.''', 
+            className='center-text'),
 
     html.Div(children = [html.Div(className='circle-grey')],className='how-to-use-circle'),
 
     html.H2("2. SELECT PARAMETERS: SIZE AND CAPPING GROUPS",className='highlighted-center-smaller-text'),
     
-    html.Div([html.Img(src='assets/fragment-size.png',
+    html.Div([html.Img(src='assets/fragment-size-v2.png',
                         style={'max-width': '50%'})],
                         className='how-to-use-image'),
     html.H3(''' Users can specify the desired length of the PUR fragments they aim to generate. 
@@ -75,8 +139,8 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
             as it allows to reduce the partial charge on atoms resulting from the discontinuity of the modelled polymer chain. ''', 
             className='center-text'), 
 
-    html.Img(src='assets/select-size.png', className='how-to-use-screenshot'),    
-    html.H3('''These are the only input settings needed to run the program.''', 
+    html.Img(src='assets/select-size-v2.png', className='how-to-use-screenshot'),    
+    html.H3('''These are the only input settings needed to run the program. Click "CALCULATE PRODUCTS" to generate PUR fragments.''', 
             className='center-text'),                
     
     html.Div(children = [html.Div(className='circle-purple')],className='how-to-use-circle'),
@@ -98,14 +162,16 @@ layout = html.Center(style = {'display': 'block','alignItems': 'center',},
             Tab "Properties histograms" shows the calculated data on plots.  
             ''', 
             className='center-text'),
-            
-    html.H3('''These properties can be downloaded as a table in .csv file format. 
-            User can store generated structures in .mol and .mol2 file formats.
-            It is also possible to generate up to 20 conformers, however, 
-            if the number of generated compounds is high, this action may take a while.''', 
-            className='center-text'),
 
-    html.Img(src='assets/results.png', className='how-to-use-screenshot-margin'),
+    html.Img(src='assets/results-v2.png', className='how-to-use-screenshot-margin'),
+
+    html.H3('''After clicking "DOWNLOAD GENERATED DATA" user can select PUR fragments that will be downloaded.
+            Compounds can be downloaded as: 2D structures (.mol file format) and 3D structures (.mol2 file format).
+            It is also possible to generate up to 20 conformers, however, larger or more complex compounds from PUR-GEN may produce fewer conformers, sometimes only one structure.
+            Calculated properties can be also downloaded as a table in .csv file format.''', 
+            className='center-text'),
+    
+    html.Img(src='assets/download.png', className='how-to-use-screenshot-margin'),
 
     html.Div(dcc.Link(html.Button("back to top of the page"), href='#top')),
 
