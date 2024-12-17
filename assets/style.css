@@ -206,6 +206,24 @@ input[type="button"].button-primary:focus {
   line-height: 1.5
 }
 
+.homepage-publication-link:link {
+  color: gray;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.homepage-publication-link:hover {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.homepage-publication-link:active {
+  color: #b292f3;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
 .contact-info {
   color: #5b5d74;
   font-size: 15px;
